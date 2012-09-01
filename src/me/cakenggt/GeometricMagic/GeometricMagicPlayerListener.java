@@ -2036,9 +2036,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 			else {
-				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+				for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+						for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--){
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
 							String newBlockString = in.next();
@@ -2089,9 +2089,9 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		else {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
-				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+				for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+						for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++){
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
 							String newBlockString = in.next();
@@ -2227,9 +2227,9 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 			else {
-				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+				for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+						for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
 							
@@ -2255,9 +2255,9 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		else {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
-				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+				for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+						for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
 							
