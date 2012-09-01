@@ -748,7 +748,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					if (fullWidth - 2 > storageCircleSize) {
 						return;
 					}
-					startLoc = actBlock.getLocation().add((halfWidth - 2), 0, -1);
+					startLoc = actBlock.getLocation().add((-1 * (halfWidth - 2)), 0, -1);
 					endLoc = actBlock.getLocation().add((halfWidth - 2), (fullWidth - 3), (-1 * (fullWidth - 2)));
 					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
 					lightning = true;
