@@ -52,9 +52,11 @@ import org.bukkit.plugin.PluginManager;
 
 public class GeometricMagicPlayerListener implements Listener {
 	static GeometricMagic plugin = new GeometricMagic();
+	private static GeometricMagicMetricsData metricsData;
 
-	public GeometricMagicPlayerListener(GeometricMagic instance) {
+	public GeometricMagicPlayerListener(GeometricMagic instance, GeometricMagicMetricsData metricsDataInstance) {
 		plugin = instance;
+		metricsData = metricsDataInstance;
 	}
 
 	public static Economy economy = null;
@@ -550,6 +552,10 @@ public class GeometricMagicPlayerListener implements Listener {
 
 		actBlock.getWorld().strikeLightningEffect(actBlock.getLocation());
 		actBlock.getWorld().strikeLightningEffect(teleLoc);
+		
+		synchronized(metricsData.getLock()) {
+			metricsData.incrementTeleportCircleCount(1);
+		}
 
 		return;
 	}
@@ -611,6 +617,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 		}
+		
+		synchronized(metricsData.getLock()) {
+			metricsData.incrementMicroCircleCount(1);
+		}
 	}
 
 	public static void transmutationCircle(Player player, World world, Block actBlock, int transmutationCircleSize, int storageCircleSize) {
@@ -623,6 +633,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		Material fromType = actBlock.getType();
 		Material toType = actBlock.getType();
 		boolean lightning = false;
+		boolean incrementTransmutationCircleCount = false;
+		boolean incrementStorageCircleCount = false;
 		if (actBlock.getRelative(0, 0, -1).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, 1).getType() == Material.REDSTONE_WIRE) {
 			halfWidth = 0;
 			while (actBlock.getRelative(0, 0, -1 * halfWidth).getType() == Material.REDSTONE_WIRE) {
@@ -653,6 +665,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					// System.out.println(circleEnd);
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 					lightning = true;
+					incrementTransmutationCircleCount = true;
 				}
 				// Storage circle
 				else {
@@ -663,6 +676,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					endLoc = actBlock.getLocation().add((fullWidth - 2), (fullWidth - 3), (halfWidth - 2));
 					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
 					lightning = true;
+					incrementStorageCircleCount = true;
 				}
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// west
@@ -684,6 +698,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					circleEnd = actBlock.getLocation().add(-1 * (fullWidth - 2), fullWidth - 3, -1 * (halfWidth - 2));
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 					lightning = true;
+					incrementTransmutationCircleCount = true;
 				}
 				// Storage circle
 				else {
@@ -694,6 +709,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					endLoc = actBlock.getLocation().add((-1 * (fullWidth - 2)), (fullWidth - 3), (-1 * (halfWidth - 2)));
 					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
 					lightning = true;
+					incrementStorageCircleCount = true;
 				}
 			}
 		} else if (actBlock.getRelative(1, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(-1, 0, 0).getType() == Material.REDSTONE_WIRE) {
@@ -725,6 +741,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					circleEnd = actBlock.getLocation().add((halfWidth - 2), fullWidth - 3, -1 * (fullWidth - 2));
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 					lightning = true;
+					incrementTransmutationCircleCount = true;
 				}
 				// Storage circle
 				else {
@@ -735,6 +752,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					endLoc = actBlock.getLocation().add((halfWidth - 2), (fullWidth - 3), (-1 * (fullWidth - 2)));
 					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
 					lightning = true;
+					incrementStorageCircleCount = true;
 				}
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
@@ -756,6 +774,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					circleEnd = actBlock.getLocation().add(-1 * (halfWidth - 2), fullWidth - 3, (fullWidth - 2));
 					alchemyCheck(fromType, fromData, toType, toData, circleStart, circleEnd, startLoc, endLoc, player, fullWidth - 2);
 					lightning = true;
+					incrementTransmutationCircleCount = true;
 				}
 				// Storage circle
 				else {
@@ -766,11 +785,20 @@ public class GeometricMagicPlayerListener implements Listener {
 					endLoc = actBlock.getLocation().add((-1 * (halfWidth - 2)), (fullWidth - 3), (fullWidth - 2));
 					storageCircle(startLoc, endLoc, player, (fullWidth - 2));
 					lightning = true;
+					incrementStorageCircleCount = true;
 				}
 			}
 		}
 		if (lightning)
 			actBlock.getWorld().strikeLightningEffect(actBlock.getLocation());
+		if (incrementTransmutationCircleCount)
+			synchronized(metricsData.getLock()) {
+				metricsData.incrementTeleportCircleCount(1);
+			}
+		if (incrementStorageCircleCount)
+			synchronized(metricsData.getLock()) {
+				metricsData.incrementStorageCircleCount(1);
+			}
 	}
 
 	public static void setCircleRemote(Player player, World world, Block actBlock) {
@@ -859,6 +887,9 @@ public class GeometricMagicPlayerListener implements Listener {
 			setCircleEffects(player, world, actBlock, effectBlock, arrayString);
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		}
+		synchronized(metricsData.getLock()) {
+			metricsData.incrementSetCircleCount(1);
 		}
 	}
 

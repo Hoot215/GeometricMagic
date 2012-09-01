@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import me.cakenggt.GeometricMagic.Metrics.Graph;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
@@ -36,6 +37,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GeometricMagic extends JavaPlugin {
+	private GeometricMagicMetricsData metricsData;
 	private Listener playerListener;
 	private Listener entityListener;
 	private static Economy economy;
@@ -277,6 +279,7 @@ public class GeometricMagic extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
+		metricsData = new GeometricMagicMetricsData();
 		configFile = new File(getDataFolder(), "config.yml");
 
 		// Copy default config file if it doesn't exist
@@ -302,7 +305,7 @@ public class GeometricMagic extends JavaPlugin {
 				System.out.println("[GeometricMagic] Transmutation cost system set to Vault");
 
 				// Register events
-				playerListener = new GeometricMagicPlayerListener(this);
+				playerListener = new GeometricMagicPlayerListener(this, metricsData);
 				entityListener = new GeometricMagicDamageListener(this);
 				getServer().getPluginManager().registerEvents(playerListener, this);
 				getServer().getPluginManager().registerEvents(entityListener, this);
@@ -316,7 +319,7 @@ public class GeometricMagic extends JavaPlugin {
 			System.out.println("[GeometricMagic] Transmutation cost system set to XP");
 
 			// Register events
-			playerListener = new GeometricMagicPlayerListener(this);
+			playerListener = new GeometricMagicPlayerListener(this, metricsData);
 			entityListener = new GeometricMagicDamageListener(this);
 			getServer().getPluginManager().registerEvents(playerListener, this);
 			getServer().getPluginManager().registerEvents(entityListener, this);
@@ -360,6 +363,75 @@ public class GeometricMagic extends JavaPlugin {
 	private void startPluginMetrics() {
 		try {
 			Metrics metrics = new Metrics(this);
+			
+			// Construct new graph
+			Graph graph = metrics.createGraph("Circles used");
+			
+			// Micro Circle
+			graph.addPlotter(new Metrics.Plotter("Micro circle") {
+				
+				@Override
+				public int getValue() {
+					int i;
+					synchronized(metricsData.getLock()) {
+						i = metricsData.getMicroCircleCount();
+					}
+					return i;
+				}
+			});
+			
+			// Teleport Circle
+			graph.addPlotter(new Metrics.Plotter("Teleport circle") {
+				
+				@Override
+				public int getValue() {
+					int i;
+					synchronized(metricsData.getLock()) {
+						i = metricsData.getTeleportCircleCount();
+					}
+					return i;
+				}
+			});
+			
+			// Transmutation Circle
+			graph.addPlotter(new Metrics.Plotter("Transmutation circle") {
+				
+				@Override
+				public int getValue() {
+					int i;
+					synchronized(metricsData.getLock()) {
+						i = metricsData.getTransmutationCircleCount();
+					}
+					return i;
+				}
+			});
+			
+			// Set Circle
+			graph.addPlotter(new Metrics.Plotter("Set circle") {
+				
+				@Override
+				public int getValue() {
+					int i;
+					synchronized(metricsData.getLock()) {
+						i = metricsData.getSetCircleCount();
+					}
+					return i;
+				}
+			});
+			
+			// Storage Circle
+			graph.addPlotter(new Metrics.Plotter("Storage circle") {
+				
+				@Override
+				public int getValue() {
+					int i;
+					synchronized(metricsData.getLock()) {
+						i = metricsData.getStorageCircleCount();
+					}
+					return i;
+				}
+			});
+			
 			metrics.start();
 		} catch (IOException e) {
 			// Failed to submit the stats :-(
