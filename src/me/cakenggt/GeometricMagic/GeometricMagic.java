@@ -123,6 +123,7 @@ public class GeometricMagic extends JavaPlugin {
 			}
 		} else if (cmd.getName().equalsIgnoreCase("circles")) {
 			if (sender.hasPermission("geometricmagic.command.circles")) {
+				sender.sendMessage(ChatColor.GREEN + "1111" + ChatColor.RESET + " Spawn Weapon Circle");
 				sender.sendMessage(ChatColor.GREEN + "1133" + ChatColor.RESET + " Repair Circle");
 				sender.sendMessage(ChatColor.GREEN + "1222" + ChatColor.RESET + " Conversion Circle");
 				sender.sendMessage(ChatColor.GREEN + "1233" + ChatColor.RESET + " Philosopher's Stone Circle");
