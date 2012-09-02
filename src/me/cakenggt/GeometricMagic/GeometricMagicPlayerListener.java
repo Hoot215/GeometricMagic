@@ -63,7 +63,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	private static HashMap<String, Long> mapCoolDowns = new HashMap<String, Long>();
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayLogin(PlayerLoginEvent event) {
+	public void onPlayerLogin(PlayerLoginEvent event) {
 		final String playerName = event.getPlayer().getName();
 		
 		if (event.getPlayer().hasPermission("geometricmagic.notify")) {
