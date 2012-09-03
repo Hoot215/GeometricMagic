@@ -1828,10 +1828,10 @@ public class GeometricMagicPlayerListener implements Listener {
 			Scanner inputFile = new Scanner(myFile);
 			while (inputFile.hasNextLine()) {
 				String name = inputFile.nextLine();
-				if (name.equals(player.getDisplayName())) {
+				if (name.equals(player.getName())) {
 					FileWriter dWriter = new FileWriter("plugins/GeometricMagic/sacrificed.txt", true);
 					PrintWriter dFile = new PrintWriter(dWriter);
-					dFile.println(player.getDisplayName());
+					dFile.println(player.getName());
 					dFile.close();
 					return;
 				}
@@ -1844,7 +1844,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		FileWriter fWriter = new FileWriter("plugins/GeometricMagic/sacrifices.txt", true);
 		PrintWriter outputFile = new PrintWriter(fWriter);
-		outputFile.println(player.getDisplayName());
+		outputFile.println(player.getName());
 		outputFile.println(0);
 		player.sendMessage("You have committed the taboo! Crafting is your sacrifice, knowledge your reward.");
 		outputFile.close();
