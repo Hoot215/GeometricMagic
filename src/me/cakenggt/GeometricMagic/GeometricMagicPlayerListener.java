@@ -1999,8 +1999,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2011,8 +2010,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
 								if (!checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2023,8 +2021,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
 								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2050,8 +2047,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2062,8 +2058,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
 								if (!checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2074,8 +2069,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
 								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2103,8 +2097,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2115,8 +2108,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
 								if (!checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2127,8 +2119,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
 								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2154,8 +2145,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2166,8 +2156,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
 								if (!checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2178,8 +2167,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
 								if (!checkBreakBlacklist(block.getTypeId()) && !checkPlaceBlacklist(newBlockID)) {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
-										block.setTypeId(newBlockID);
-										block.setData(newBlockData);
+										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
 								else {
@@ -2211,7 +2199,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-										block.setType(Material.AIR);
+										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2237,7 +2225,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-										block.setType(Material.AIR);
+										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2265,7 +2253,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-										block.setType(Material.AIR);
+										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2291,7 +2279,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-										block.setType(Material.AIR);
+										block.setTypeId(0, false);
 									}
 								}
 								else {
