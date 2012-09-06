@@ -2199,7 +2199,6 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2225,7 +2224,6 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2253,7 +2251,6 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2279,6 +2276,110 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (startLoc.getBlockX() > endLoc.getBlockX()) {
+			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
+				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
+						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										block.setTypeId(0, false);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
+						for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										block.setTypeId(0, false);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
+				for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
+					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
+						for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
+										block.setTypeId(0, false);
+									}
+								}
+								else {
+									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+									out.println("0,0");
+								}
+							}
+							else {
+								out.println("0,0");
+							}
+						}
+					}
+				}
+			}
+			else {
+				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
+					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
+						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
+							Location loc = new Location(world, x, y, z);
+							Block block = loc.getBlock();
+							
+							if (block.getType() != Material.AIR) {
+								if (!checkBreakBlacklist(block.getTypeId())) {
+									if (checkBlockBreakSimulation(loc, player)) {
 										block.setTypeId(0, false);
 									}
 								}
