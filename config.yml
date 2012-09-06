@@ -178,10 +178,6 @@ blacklist:
     # The blacklist used for placing blocks with transmutation
     place:
     - 7
-    - 8
-    - 9
-    - 10
-    - 11
     - 19
     - 34
     - 36
