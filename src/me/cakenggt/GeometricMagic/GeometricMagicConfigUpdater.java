@@ -69,82 +69,6 @@ public class GeometricMagicConfigUpdater {
 					return;
 				}
 			}
-			else if (plugin.getConfig().getString("version").equals("2.7.3")) {
-				System.out.println("[GeometricMagic] Updating config to v2.7.4...");
-				List<String> strList = new ArrayList<String>();
-				
-				File myFile = new File("plugins/GeometricMagic/config.yml");
-				if (myFile.exists()) {
-					Scanner in = new Scanner(myFile);
-					while (in.hasNextLine()) {
-						String nextLine = in.nextLine();
-						if (!nextLine.contains("version:")
-								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
-							strList.add(nextLine);
-						else
-							in.nextLine();
-					}
-					in.close();
-					
-					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
-					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
-					for (String s : strList) {
-						out.println(s);
-					}
-					
-					out.println();
-					out.println("# DO NOT MODIFY THIS VALUE!");
-					out.println("version: 2.7.4");
-					out.close();
-					
-					plugin.reloadConfig();
-				}
-				else
-					return;
-				
-				if (!isUpdated()) {
-					updateConfig(instance);
-					return;
-				}
-			}
-			else if (plugin.getConfig().getString("version").equals("2.7.4")) {
-				System.out.println("[GeometricMagic] Updating config to v2.7.5...");
-				List<String> strList = new ArrayList<String>();
-				
-				File myFile = new File("plugins/GeometricMagic/config.yml");
-				if (myFile.exists()) {
-					Scanner in = new Scanner(myFile);
-					while (in.hasNextLine()) {
-						String nextLine = in.nextLine();
-						if (!nextLine.contains("version:")
-								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
-							strList.add(nextLine);
-						else
-							in.nextLine();
-					}
-					in.close();
-					
-					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
-					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
-					for (String s : strList) {
-						out.println(s);
-					}
-					
-					out.println();
-					out.println("# DO NOT MODIFY THIS VALUE!");
-					out.println("version: 2.7.5");
-					out.close();
-					
-					plugin.reloadConfig();
-				}
-				else
-					return;
-				
-				if (!isUpdated()) {
-					updateConfig(instance);
-					return;
-				}
-			}
 			else if (plugin.getConfig().getString("version").equals("2.7.5")) {
 				System.out.println("[GeometricMagic] Updating config to v2.7.6...");
 				List<String> strList = new ArrayList<String>();
@@ -162,9 +86,9 @@ public class GeometricMagicConfigUpdater {
 								&& !nextLine.contains("    cooldown:")
 								&& !nextLine.contains("    # What system to use for transmutation cost")
 								&& !nextLine.contains("    # Possible values: xp, vault (requires Vault)")
-								&& !nextLine.contains("    cost: xp")
+								&& !nextLine.contains("    cost:")
 								&& !nextLine.contains("    # Apply Philosopher's Stone to transmutes (true or false)")
-								&& !nextLine.contains("    stone: true"))
+								&& !nextLine.contains("    stone:"))
 							strList.add(nextLine);
 						else
 							in.nextLine();
@@ -209,196 +133,8 @@ public class GeometricMagicConfigUpdater {
 					return;
 				}
 			}
-			else if (plugin.getConfig().getString("version").equals("2.7.6")) {
-				System.out.println("[GeometricMagic] Updating config to v2.8.0...");
-				List<String> strList = new ArrayList<String>();
-				
-				File myFile = new File("plugins/GeometricMagic/config.yml");
-				if (myFile.exists()) {
-					Scanner in = new Scanner(myFile);
-					while (in.hasNextLine()) {
-						String nextLine = in.nextLine();
-						if (!nextLine.contains("version:")
-								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
-							strList.add(nextLine);
-						else
-							in.nextLine();
-					}
-					in.close();
-					
-					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
-					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
-					for (String s : strList) {
-						out.println(s);
-					}
-					
-					out.println();
-					out.println("# DO NOT MODIFY THIS VALUE!");
-					out.println("version: 2.8.0");
-					out.close();
-					
-					plugin.reloadConfig();
-				}
-				else
-					return;
-				
-				if (!isUpdated()) {
-					updateConfig(instance);
-					return;
-				}
-			}
-			else if (plugin.getConfig().getString("version").equals("2.8.0")) {
-				System.out.println("[GeometricMagic] Updating config to v2.8.1...");
-				List<String> strList = new ArrayList<String>();
-				
-				File myFile = new File("plugins/GeometricMagic/config.yml");
-				if (myFile.exists()) {
-					Scanner in = new Scanner(myFile);
-					while (in.hasNextLine()) {
-						String nextLine = in.nextLine();
-						if (!nextLine.contains("version:")
-								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
-							strList.add(nextLine);
-						else
-							in.nextLine();
-					}
-					in.close();
-					
-					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
-					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
-					for (String s : strList) {
-						out.println(s);
-					}
-					
-					out.println();
-					out.println("# DO NOT MODIFY THIS VALUE!");
-					out.println("version: 2.8.1");
-					out.close();
-					
-					plugin.reloadConfig();
-				}
-				else
-					return;
-				
-				if (!isUpdated()) {
-					updateConfig(instance);
-					return;
-				}
-			}
-			else if (plugin.getConfig().getString("version").equals("2.8.1")) {
-				System.out.println("[GeometricMagic] Updating config to v2.8.2...");
-				List<String> strList = new ArrayList<String>();
-				
-				File myFile = new File("plugins/GeometricMagic/config.yml");
-				if (myFile.exists()) {
-					Scanner in = new Scanner(myFile);
-					while (in.hasNextLine()) {
-						String nextLine = in.nextLine();
-						if (!nextLine.contains("version:")
-								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
-							strList.add(nextLine);
-						else
-							in.nextLine();
-					}
-					in.close();
-					
-					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
-					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
-					for (String s : strList) {
-						out.println(s);
-					}
-					
-					out.println();
-					out.println("# DO NOT MODIFY THIS VALUE!");
-					out.println("version: 2.8.2");
-					out.close();
-					
-					plugin.reloadConfig();
-				}
-				else
-					return;
-				
-				if (!isUpdated()) {
-					updateConfig(instance);
-					return;
-				}
-			}
-			else if (plugin.getConfig().getString("version").equals("2.8.2")) {
-				System.out.println("[GeometricMagic] Updating config to v2.8.3...");
-				List<String> strList = new ArrayList<String>();
-				
-				File myFile = new File("plugins/GeometricMagic/config.yml");
-				if (myFile.exists()) {
-					Scanner in = new Scanner(myFile);
-					while (in.hasNextLine()) {
-						String nextLine = in.nextLine();
-						if (!nextLine.contains("version:")
-								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
-							strList.add(nextLine);
-						else
-							in.nextLine();
-					}
-					in.close();
-					
-					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
-					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
-					for (String s : strList) {
-						out.println(s);
-					}
-					
-					out.println();
-					out.println("# DO NOT MODIFY THIS VALUE!");
-					out.println("version: 2.8.3");
-					out.close();
-					
-					plugin.reloadConfig();
-				}
-				else
-					return;
-				
-				if (!isUpdated()) {
-					updateConfig(instance);
-					return;
-				}
-			}
-			else if (plugin.getConfig().getString("version").equals("2.8.3")) {
-				System.out.println("[GeometricMagic] Updating config to v2.8.4...");
-				List<String> strList = new ArrayList<String>();
-				
-				File myFile = new File("plugins/GeometricMagic/config.yml");
-				if (myFile.exists()) {
-					Scanner in = new Scanner(myFile);
-					while (in.hasNextLine()) {
-						String nextLine = in.nextLine();
-						if (!nextLine.contains("version:")
-								&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
-							strList.add(nextLine);
-						else
-							in.nextLine();
-					}
-					in.close();
-					
-					Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
-					PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
-					for (String s : strList) {
-						out.println(s);
-					}
-					
-					out.println();
-					out.println("# DO NOT MODIFY THIS VALUE!");
-					out.println("version: 2.8.4");
-					out.close();
-					
-					plugin.reloadConfig();
-				}
-				else
-					return;
-				
-				if (!isUpdated()) {
-					updateConfig(instance);
-					return;
-				}
-			}
+			else
+				standardUpdate(plugin.getDescription().getVersion());
 		}
 		// If the config is updated
 		else {
@@ -417,6 +153,38 @@ public class GeometricMagicConfigUpdater {
 		}
 		else {
 			return false;
+		}
+	}
+	
+	public static void standardUpdate(String newVersion) throws IOException {
+		System.out.println("[GeometricMagic] Updating config to v" + newVersion + "...");
+		List<String> strList = new ArrayList<String>();
+		
+		File myFile = new File("plugins/GeometricMagic/config.yml");
+		if (myFile.exists()) {
+			Scanner in = new Scanner(myFile);
+			while (in.hasNextLine()) {
+				String nextLine = in.nextLine();
+				if (!nextLine.contains("version:")
+						&& !nextLine.contains("# DO NOT MODIFY THIS VALUE!"))
+					strList.add(nextLine);
+				else
+					in.nextLine();
+			}
+			in.close();
+			
+			Files.delete(Paths.get("plugins/GeometricMagic/config.yml"));
+			PrintWriter out = new PrintWriter(new File("plugins/GeometricMagic/config.yml"));
+			for (String s : strList) {
+				out.println(s);
+			}
+			
+			out.println();
+			out.println("# DO NOT MODIFY THIS VALUE!");
+			out.println("version: " + newVersion);
+			out.close();
+			
+			plugin.reloadConfig();
 		}
 	}
 }

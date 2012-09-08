@@ -40,6 +40,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -53,10 +54,12 @@ import org.bukkit.plugin.PluginManager;
 public class GeometricMagicPlayerListener implements Listener {
 	static GeometricMagic plugin = new GeometricMagic();
 	private static GeometricMagicMetricsData metricsData;
+	private static GeometricMagicBlockListener blockListener;
 
-	public GeometricMagicPlayerListener(GeometricMagic instance, GeometricMagicMetricsData metricsDataInstance) {
+	public GeometricMagicPlayerListener(GeometricMagic instance, GeometricMagicMetricsData metricsDataInstance, GeometricMagicBlockListener blockListenerInstance) {
 		plugin = instance;
 		metricsData = metricsDataInstance;
+		blockListener = blockListenerInstance;
 	}
 
 	public static Economy economy = null;
@@ -1982,6 +1985,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static void storageCircleLoad(Location startLoc, Location endLoc, Player player, int size, File file) throws FileNotFoundException {
 		World world = player.getWorld();
 		Scanner in = new Scanner(file);
+		plugin.getServer().getPluginManager().registerEvents(blockListener, plugin);
 		
 		if (startLoc.getBlockX() > endLoc.getBlockX()) {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
@@ -2179,6 +2183,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 		}
+		HandlerList.unregisterAll(blockListener);
 		in.close();
 		file.delete();
 	}
@@ -2186,6 +2191,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	public static void storageCircleStore(Location startLoc, Location endLoc, Player player, int size, File file) throws FileNotFoundException {
 		World world = player.getWorld();
 		PrintWriter out = new PrintWriter(file);
+		plugin.getServer().getPluginManager().registerEvents(blockListener, plugin);
 		
 		if (startLoc.getBlockX() > endLoc.getBlockX()) {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
@@ -2199,6 +2205,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2224,6 +2231,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2251,6 +2259,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
+										block.setTypeId(0, false);
 									}
 								}
 								else {
@@ -2276,58 +2285,6 @@ public class GeometricMagicPlayerListener implements Listener {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
-									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-									out.println("0,0");
-								}
-							}
-							else {
-								out.println("0,0");
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		if (startLoc.getBlockX() > endLoc.getBlockX()) {
-			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
-				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
-					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
-						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
-							Location loc = new Location(world, x, y, z);
-							Block block = loc.getBlock();
-							
-							if (block.getType() != Material.AIR) {
-								if (!checkBreakBlacklist(block.getTypeId())) {
-									if (checkBlockBreakSimulation(loc, player)) {
-										block.setTypeId(0, false);
-									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-									out.println("0,0");
-								}
-							}
-							else {
-								out.println("0,0");
-							}
-						}
-					}
-				}
-			}
-			else {
-				for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
-					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
-						for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
-							Location loc = new Location(world, x, y, z);
-							Block block = loc.getBlock();
-							
-							if (block.getType() != Material.AIR) {
-								if (!checkBreakBlacklist(block.getTypeId())) {
-									if (checkBlockBreakSimulation(loc, player)) {
 										block.setTypeId(0, false);
 									}
 								}
@@ -2344,58 +2301,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 			}
 		}
-		else {
-			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
-				for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
-					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
-						for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
-							Location loc = new Location(world, x, y, z);
-							Block block = loc.getBlock();
-							
-							if (block.getType() != Material.AIR) {
-								if (!checkBreakBlacklist(block.getTypeId())) {
-									if (checkBlockBreakSimulation(loc, player)) {
-										block.setTypeId(0, false);
-									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-									out.println("0,0");
-								}
-							}
-							else {
-								out.println("0,0");
-							}
-						}
-					}
-				}
-			}
-			else {
-				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
-					for (int y = endLoc.getBlockY(); y >= startLoc.getBlockY(); y--) {
-						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
-							Location loc = new Location(world, x, y, z);
-							Block block = loc.getBlock();
-							
-							if (block.getType() != Material.AIR) {
-								if (!checkBreakBlacklist(block.getTypeId())) {
-									if (checkBlockBreakSimulation(loc, player)) {
-										block.setTypeId(0, false);
-									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-									out.println("0,0");
-								}
-							}
-							else {
-								out.println("0,0");
-							}
-						}
-					}
-				}
-			}
-		}
+		HandlerList.unregisterAll(blockListener);
 		out.close();
 	}
 	

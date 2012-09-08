@@ -40,6 +40,7 @@ public class GeometricMagic extends JavaPlugin {
 	private GeometricMagicMetricsData metricsData;
 	private Listener playerListener;
 	private Listener entityListener;
+	private GeometricMagicBlockListener blockListener;
 	private static Economy economy;
 	File configFile;
 	public boolean autoUpdateNotify;
@@ -282,6 +283,7 @@ public class GeometricMagic extends JavaPlugin {
 
 		metricsData = new GeometricMagicMetricsData();
 		configFile = new File(getDataFolder(), "config.yml");
+		blockListener = new GeometricMagicBlockListener();
 
 		// Copy default config file if it doesn't exist
 		if (!configFile.exists()) {
@@ -306,7 +308,7 @@ public class GeometricMagic extends JavaPlugin {
 				System.out.println("[GeometricMagic] Transmutation cost system set to Vault");
 
 				// Register events
-				playerListener = new GeometricMagicPlayerListener(this, metricsData);
+				playerListener = new GeometricMagicPlayerListener(this, metricsData, blockListener);
 				entityListener = new GeometricMagicDamageListener(this);
 				getServer().getPluginManager().registerEvents(playerListener, this);
 				getServer().getPluginManager().registerEvents(entityListener, this);
@@ -320,7 +322,7 @@ public class GeometricMagic extends JavaPlugin {
 			System.out.println("[GeometricMagic] Transmutation cost system set to XP");
 
 			// Register events
-			playerListener = new GeometricMagicPlayerListener(this, metricsData);
+			playerListener = new GeometricMagicPlayerListener(this, metricsData, blockListener);
 			entityListener = new GeometricMagicDamageListener(this);
 			getServer().getPluginManager().registerEvents(playerListener, this);
 			getServer().getPluginManager().registerEvents(entityListener, this);
