@@ -52,17 +52,25 @@ transmutation:
     # Apply Philosopher's Stone to transmutes (true or false)
     stone: true
 
+# STORAGE SECTION
+storage:
+
+    # Cool down time between storage circle use in seconds
+    cooldown: 10
+
 # SET CIRCLES SECTION
 setcircles:
-
-    # Cool down time between using set circles in seconds
-    cooldown: 10
 
     # Limit augmentation size for set circles
     limitsize: 5
 
     # Limit number of nearby arrows to check
     limitarrows: 3
+
+    # Learning set circles
+    learn:
+        # Cool down time between learning set circles in seconds
+        cooldown: 60
 
     # Spawn weapon circle
     1111:
@@ -71,19 +79,27 @@ setcircles:
         # The item ID to be given to the player
         # Default: Iron sword
         item: 267
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Repair Circle
-    1133: []
-    
+    1133:
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
+
     # Conversion Circle
     1222:
         # The cost of this circle in hunger
         cost: 1
-    
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
+
     # Philosopher's Stone Circle
     1233:
         # The cost of this circle in hunger
         cost: 20
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Boron Circle
     1234:
@@ -91,27 +107,37 @@ setcircles:
         cost: 1
         # The number of redstone to drop
         amount: 1
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Soul Circle
     2223:
         # The cost of this circle in hunger
         cost: 10
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Homunculus Circle
     2224:
         # The cost of this circle in hunger
         cost: 10
+        # Cool down time between using this set circle in seconds
+        cooldown: 60
     
     # Safe Teleportation Circle
     2244:
         # The cost of this circle in hunger
         cost: 1
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Explosion Circle
     2333:
         # The cost of this circle in hunger
         # Formula: cost + circle size (can be augmented) / 2
         cost: 2
+        # Cool down time between using this set circle in seconds
+        cooldown: 60
     
     # Fire Circle
     3334:
@@ -119,6 +145,8 @@ setcircles:
         cost: 5
         # The size of this circle in blocks cubed
         size: 3
+        # Cool down time between using this set circle in seconds
+        cooldown: 60
     
     # Fire Explosion Circle
     3344:
@@ -127,36 +155,50 @@ setcircles:
         cost: 10
         # The size of this circle in blocks cubed
         size: 3
+        # Cool down time between using this set circle in seconds
+        cooldown: 60
     
     # Human Transmutation Circle
     3444:
         # The cost of this circle in hunger
         cost: 20
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Bed Circle (0111)
     x111:
         # The cost of this circle in hunger
         cost: 16
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Pig Circle (0044)
     x044:
         # The cost of this circle in hunger
         cost: 10
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Sheep Circle (0144)
     x144:
         # The cost of this circle in hunger
         cost: 10
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Cow Circle (0244)
     x244:
         # The cost of this circle in hunger
         cost: 10
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
     
     # Chicken Circle (0344)
     x344:
         # The cost of this circle in hunger
         cost: 10
+        # Cool down time between using this set circle in seconds
+        cooldown: 300
 
 # PHILOSOPHER'S STONE SECTION
 philosopherstone:

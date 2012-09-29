@@ -159,7 +159,7 @@ permissions:
             geometricmagic.bypass.hunger: true
             geometricmagic.bypass.sacrifice: true
     geometricmagic.bypass.cooldown:
-        description: Allows you to bypass transmutation and set circle cooldowns
+        description: Allows you to bypass transmutation, storage and set circle cooldowns
     geometricmagic.bypass.crafting:
         description: Allows you to bypass crafting being taken away by human transmutation
     geometricmagic.bypass.hunger:
