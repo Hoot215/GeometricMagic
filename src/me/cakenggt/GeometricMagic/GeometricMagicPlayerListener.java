@@ -101,6 +101,9 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 
 		Player player = event.getPlayer();
+		if (!(player instanceof Player)) {
+			return;
+		}
 
 		boolean sacrificed = false;
 
@@ -122,7 +125,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		Block actBlock = player.getLocation().getBlock();
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (event.getClickedBlock().getType() == Material.WORKBENCH && (sacrifices && !sacrificed) && !player.hasPermission("geometricmagic.bypass.crafting")) {
+			if (event.getClickedBlock().getType() == Material.WORKBENCH && (sacrifices && !sacrificed) && !player.hasPermission("geometricmagic.bypass.crafting")
+					&& player.hasPermission("geometricmagic.set")) {
 				// cancel event instead of turning block into air
 				player.sendMessage("You have already sacrificed your crafting abilities. You must sacrifice your alchemy forever to get them back by performing another human transmutation.");
 				event.setCancelled(true);
@@ -138,39 +142,25 @@ public class GeometricMagicPlayerListener implements Listener {
 			return;
 		}
 
-		if (event.getAction() == Action.RIGHT_CLICK_AIR && inHandType == Material.FLINT) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR && inHandType == Material.FLINT && sacrifices) {
 			actBlock = player.getTargetBlock(null, 120);
 		}
 
 		World world = player.getWorld();
 		try {
-			isCircle(player, world, actBlock);
+			isCircle(player, world, actBlock, sacrifices);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void isCircle(Player player, World world, Block actBlock) throws IOException {
+	public static void isCircle(Player player, World world, Block actBlock, Boolean sacrifices) throws IOException {
 		// System.out.println("isCircle?");
 		if (actBlock.getType() == Material.REDSTONE_WIRE && player.getItemInHand().getAmount() == 0) {
 			// System.out.println("isCircle");
 			circleChooser(player, world, actBlock);
 		}
-		if (player.getItemInHand().getType() == Material.FLINT) {
-
-			// set circle cool down
-			if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
-				int coolDown = plugin.getConfig().getInt("setcircles.cooldown");
-				if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
-					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
-					if (diff < coolDown) {
-						// still cooling down
-						player.sendMessage(coolDown - diff + " seconds before you can do that again.");
-						return;
-					}
-				}
-				mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
-			}
+		if (player.getItemInHand().getType() == Material.FLINT && sacrifices) {
 
 			File myFile = new File("plugins/GeometricMagic/sacrifices.txt");
 			String circle = "[0, 0, 0, 0]";
@@ -612,6 +602,12 @@ public class GeometricMagicPlayerListener implements Listener {
 		for (int i = 0; i < entitiesList.size() && limitCount != 0; i++) {
 			if (entitiesList.get(i) instanceof Arrow) {
 				Arrow shotArrow = (Arrow) entitiesList.get(i);
+
+				// only player arrows matter (no skeletons)
+				if (!(shotArrow.getShooter() instanceof Player)) {
+					continue;
+				}
+
 				if (shotArrow.getLocation().getBlock().getType() == Material.REDSTONE_WIRE) {
 					limitCount--;
 					Block newActPoint = shotArrow.getLocation().getBlock();
@@ -913,7 +909,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				return;
 			}
 			
-			cost = plugin.getConfig().getInt("setcircles.1222.cost");
+			cost = plugin.getConfig().getInt("setcircles.1111.cost");
 			if (cost > 20)
 				cost = 20;
 			
@@ -1024,6 +1020,12 @@ public class GeometricMagicPlayerListener implements Listener {
 							newItem.addEnchantments(effects);
 
 							droppedItem.remove();
+
+							// TODO this didn't work...
+							// drop items slightly above the block so they don't go under it
+							// will it also stop fire there because that would be nice?
+							effectBlockLocation.add(0, 0.5, 0);
+							;
 							effectBlock.getWorld().dropItem(effectBlockLocation, newItem);
 							count++;
 						} else {
@@ -2006,9 +2008,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block place
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
@@ -2017,9 +2016,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block break and place
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
@@ -2027,9 +2023,6 @@ public class GeometricMagicPlayerListener implements Listener {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
 								}
 							}
 						}
@@ -2054,9 +2047,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block place
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
@@ -2065,9 +2055,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block break and place
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
@@ -2075,9 +2062,6 @@ public class GeometricMagicPlayerListener implements Listener {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
 								}
 							}
 						}
@@ -2104,9 +2088,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block place
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
@@ -2115,9 +2096,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block break and place
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
@@ -2125,9 +2103,6 @@ public class GeometricMagicPlayerListener implements Listener {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
 								}
 							}
 						}
@@ -2152,9 +2127,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block place
 							else if (block.getTypeId() == 0 && newBlockID != 0) {
@@ -2163,9 +2135,6 @@ public class GeometricMagicPlayerListener implements Listener {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
 								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
-								}
 							}
 							// Block break and place
 							else if (block.getTypeId() != 0 && newBlockID != 0) {
@@ -2173,9 +2142,6 @@ public class GeometricMagicPlayerListener implements Listener {
 									if (checkBlockBreakSimulation(loc, player) && checkBlockPlaceSimulation(loc, newBlockID, newBlockData, loc, player)) {
 										block.setTypeIdAndData(newBlockID, newBlockData, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
 								}
 							}
 						}
@@ -2207,9 +2173,7 @@ public class GeometricMagicPlayerListener implements Listener {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
 										block.setTypeId(0, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								} else {
 									out.println("0,0");
 								}
 							}
@@ -2233,9 +2197,7 @@ public class GeometricMagicPlayerListener implements Listener {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
 										block.setTypeId(0, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								} else {
 									out.println("0,0");
 								}
 							}
@@ -2261,9 +2223,7 @@ public class GeometricMagicPlayerListener implements Listener {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
 										block.setTypeId(0, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								} else {
 									out.println("0,0");
 								}
 							}
@@ -2287,9 +2247,7 @@ public class GeometricMagicPlayerListener implements Listener {
 										out.println(String.valueOf(block.getTypeId()) + "," + String.valueOf(block.getData()));
 										block.setTypeId(0, false);
 									}
-								}
-								else {
-									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
+								} else {
 									out.println("0,0");
 								}
 							}
