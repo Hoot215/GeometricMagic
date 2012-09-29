@@ -2612,8 +2612,6 @@ public class GeometricMagicPlayerListener implements Listener {
 			value = plugin.getConfig().getInt("values." + ID + "." + Data);
 		}
 
-		System.out.println("value: " + value);
-
 		return value;
 	}
 
