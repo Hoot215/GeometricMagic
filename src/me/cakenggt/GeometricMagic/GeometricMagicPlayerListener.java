@@ -58,11 +58,31 @@ public class GeometricMagicPlayerListener implements Listener {
 	static GeometricMagic plugin = new GeometricMagic();
 	private static GeometricMagicMetricsData metricsData;
 	private static GeometricMagicBlockListener blockListener;
+	private static HashMap<String, String> setCircleArray = new HashMap<String, String>();
 
 	public GeometricMagicPlayerListener(GeometricMagic instance, GeometricMagicMetricsData metricsDataInstance, GeometricMagicBlockListener blockListenerInstance) {
 		plugin = instance;
 		metricsData = metricsDataInstance;
 		blockListener = blockListenerInstance;
+
+		setCircleArray.put("1111", "Item Circle");
+		setCircleArray.put("1133", "Repair Circle");
+		setCircleArray.put("1222", "Conversion Circle");
+		setCircleArray.put("1233", "Philosopher's Stone Circle");
+		setCircleArray.put("1234", "Boron Circle");
+		setCircleArray.put("2223", "Soul Circle");
+		setCircleArray.put("2224", "Homunculus Circle");
+		setCircleArray.put("2244", "Safe Teleportation Circle");
+		setCircleArray.put("2333", "Explosion Circle");
+		setCircleArray.put("3334", "Fire Circle");
+		setCircleArray.put("3344", "Fire Explosion Circle");
+		setCircleArray.put("3444", "Human Transmutation Circle");
+		setCircleArray.put("x111", "Bed Circle");
+		setCircleArray.put("x044", "Pig Circle");
+		setCircleArray.put("x144", "Sheep Circle");
+		setCircleArray.put("x244", "Cow Circle");
+		setCircleArray.put("x344", "Chicken Circle");
+
 	}
 
 	public static Economy economy = null;
@@ -290,19 +310,11 @@ public class GeometricMagicPlayerListener implements Listener {
 			// System.out.println("circleSize:" + circleSize);
 
 			// transmute cool down
-			if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
-				int coolDown = plugin.getConfig().getInt("transmutation.cooldown");
-				if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
-					long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
-					if (diff < coolDown) {
-						// still cooling down
-						player.sendMessage(coolDown - diff + " seconds before you can do that again.");
-						return;
-					}
-				}
-				mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
-			}
-
+			/*
+			 * if (!player.hasPermission("geometricmagic.bypass.cooldown")) { int coolDown = plugin.getConfig().getInt("transmutation.cooldown"); if (mapCoolDowns.containsKey(player.getName() +
+			 * " transmute circle")) { long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000; if (diff < coolDown) { // still cooling down
+			 * player.sendMessage(coolDown - diff + " seconds before you can do that again."); return; } } mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis()); }
+			 */
 			if (circleSize > 0) {
 				transmutationCircle(player, world, actBlock, transmutationCircleSize, storageCircleSize);
 			}
@@ -314,19 +326,6 @@ public class GeometricMagicPlayerListener implements Listener {
 				&& actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
 
 			if (player.hasPermission("geometricmagic.set")) {
-				// set circle cool down
-				if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
-					int coolDown = plugin.getConfig().getInt("setcircles.cooldown");
-					if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
-						long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
-						if (diff < coolDown) {
-							// still cooling down
-							player.sendMessage(coolDown - diff + " seconds before you can do that again.");
-							return;
-						}
-					}
-					mapCoolDowns.put(player.getName() + " set circle", System.currentTimeMillis());
-				}
 
 				// exempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
@@ -567,36 +566,65 @@ public class GeometricMagicPlayerListener implements Listener {
 			player.sendMessage("Your experience level is " + player.getLevel());
 		}
 
-		// Tell player when they can use a set circle
+		// Tell player the set circles that are on cooldown
 		int coolDown = plugin.getConfig().getInt("setcircles.cooldown");
-		if (mapCoolDowns.containsKey(player.getName() + " set circle")) {
-			long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " set circle")) / 1000;
-			if (diff < coolDown) {
-				// still cooling down
-				player.sendMessage(coolDown - diff + " seconds before you can use a set circle.");
-			} else {
-				// off cooldown
-				player.sendMessage("Your set circle is ready to use.");
+		if (player.hasPermission("geometricmagic.set")) {
+			int onCDCount = 0;
+			for (String setCircleId : setCircleArray.keySet()) {
+				long coolDownValue = getSetCircleCooldown(player, setCircleId);
+				if (coolDownValue > 0) {
+					onCDCount++;
+					// still cooling down
+					player.sendMessage(ChatColor.RED + "" + coolDownValue + " seconds before you can use set circle " + setCircleId + " (" + setCircleArray.get(setCircleId) + ")");
+				}
 			}
-		} else {
-			// off cooldown
-			player.sendMessage("Your set circle is ready to use.");
+			if (onCDCount == 0) {
+				player.sendMessage(ChatColor.GREEN + "Your set circles are all ready to use.");
+			} else {
+				player.sendMessage(ChatColor.GREEN + "Any remaining set circles are ready to use.");
+			}
+			long coolDownValue = getSetCircleCooldown(player, "learn");
+			if (coolDownValue > 0) {
+				player.sendMessage(ChatColor.RED + "" + coolDownValue + " seconds before you can learn another set circle.");
+			}
 		}
 
 		// Tell player when they can use a transmute circle
-		coolDown = plugin.getConfig().getInt("transmutation.cooldown");
-		if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
-			long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
-			if (diff < coolDown) {
-				// still cooling down
-				player.sendMessage(coolDown - diff + " seconds before you can use a transmutation circle.");
+		if (canTransmute(player)) {
+			coolDown = plugin.getConfig().getInt("transmutation.cooldown");
+			if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
+				if (diff < coolDown) {
+					// still cooling down
+					long transmuteCD = coolDown - diff;
+					player.sendMessage(ChatColor.RED + "" + transmuteCD + " seconds before you can use a transmutation circle.");
+				} else {
+					// off cooldown
+					player.sendMessage(ChatColor.GREEN + "Your transmutation circle is ready to use.");
+				}
 			} else {
 				// off cooldown
-				player.sendMessage("Your transmutation circle is ready to use.");
+				player.sendMessage(ChatColor.GREEN + "Your transmutation circle is ready to use.");
 			}
-		} else {
-			// off cooldown
-			player.sendMessage("Your transmutation circle is ready to use.");
+		}
+
+		// Tell player when they can use a storage circle
+		if (canUseStorage(player)) {
+			coolDown = plugin.getConfig().getInt("storage.cooldown");
+			if (mapCoolDowns.containsKey(player.getName() + " storage circle")) {
+				long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " storage circle")) / 1000;
+				if (diff < coolDown) {
+					// still cooling down
+					long storageCD = coolDown - diff;
+					player.sendMessage(ChatColor.RED + "" + storageCD + " seconds before you can use a storage circle.");
+				} else {
+					// off cooldown
+					player.sendMessage(ChatColor.GREEN + "Your storage circle is ready to use.");
+				}
+			} else {
+				// off cooldown
+				player.sendMessage(ChatColor.GREEN + "Your storage circle is ready to use.");
+			}
 		}
 
 		List<Entity> entitiesList = player.getNearbyEntities(100, 32, 100);
@@ -625,6 +653,24 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 	}
 
+	public static boolean canTransmute(Player player) {
+		if (player.hasPermission("geometricmagic.transmutation.*") || player.hasPermission("geometricmagic.transmutation.1") || player.hasPermission("geometricmagic.transmutation.3")
+				|| player.hasPermission("geometricmagic.transmutation.5") || player.hasPermission("geometricmagic.transmutation.7") || player.hasPermission("geometricmagic.transmutation.9")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean canUseStorage(Player player) {
+		if (player.hasPermission("geometricmagic.storage.*") || player.hasPermission("geometricmagic.storage.1") || player.hasPermission("geometricmagic.storage.3")
+				|| player.hasPermission("geometricmagic.storage.5") || player.hasPermission("geometricmagic.storage.7") || player.hasPermission("geometricmagic.storage.9")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public static void transmutationCircle(Player player, World world, Block actBlock, int transmutationCircleSize, int storageCircleSize) {
 		int halfWidth = 0;
 		int fullWidth = 0;
@@ -648,6 +694,21 @@ public class GeometricMagicPlayerListener implements Listener {
 				// east
 				if (actBlock.getRelative((halfWidth - 1), 0, halfWidth).getType() == Material.REDSTONE_WIRE
 						&& actBlock.getRelative((halfWidth - 1), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+
+					// transmute cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("transmutation.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > transmutationCircleSize) {
 						return;
 					}
@@ -671,6 +732,23 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 				// Storage circle
 				else {
+					if (!canUseStorage(player))
+						return;
+
+					// storage cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("storage.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " storage circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " storage circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " storage circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > storageCircleSize) {
 						return;
 					}
@@ -685,6 +763,21 @@ public class GeometricMagicPlayerListener implements Listener {
 				// System.out.println("transmutationCircle west");
 				if (actBlock.getRelative((-1 * (halfWidth - 1)), 0, halfWidth).getType() == Material.REDSTONE_WIRE
 						&& actBlock.getRelative((-1 * (halfWidth - 1)), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+
+					// transmute cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("transmutation.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > transmutationCircleSize) {
 						return;
 					}
@@ -704,6 +797,23 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 				// Storage circle
 				else {
+					if (!canUseStorage(player))
+						return;
+
+					// storage cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("storage.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " storage circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " storage circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " storage circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > storageCircleSize) {
 						return;
 					}
@@ -728,6 +838,21 @@ public class GeometricMagicPlayerListener implements Listener {
 				// System.out.println("transmutationCircle north");
 				if (actBlock.getRelative(halfWidth, 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE
 						&& actBlock.getRelative((-1 * halfWidth), 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE) {
+
+					// transmute cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("transmutation.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > transmutationCircleSize) {
 						return;
 					}
@@ -747,6 +872,23 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 				// Storage circle
 				else {
+					if (!canUseStorage(player))
+						return;
+
+					// storage cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("storage.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " storage circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " storage circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " storage circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > storageCircleSize) {
 						return;
 					}
@@ -759,8 +901,23 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
 				// System.out.println("transmutationCircle south");
-				if (actBlock.getRelative(halfWidth, 0, (halfWidth -1)).getType() == Material.REDSTONE_WIRE
-						&& actBlock.getRelative((-1 * halfWidth), 0, (halfWidth -1)).getType() == Material.REDSTONE_WIRE) {
+				if (actBlock.getRelative(halfWidth, 0, (halfWidth - 1)).getType() == Material.REDSTONE_WIRE
+						&& actBlock.getRelative((-1 * halfWidth), 0, (halfWidth - 1)).getType() == Material.REDSTONE_WIRE) {
+
+					// transmute cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("transmutation.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " transmute circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " transmute circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " transmute circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > transmutationCircleSize) {
 						return;
 					}
@@ -780,6 +937,23 @@ public class GeometricMagicPlayerListener implements Listener {
 				}
 				// Storage circle
 				else {
+					if (!canUseStorage(player))
+						return;
+
+					// storage cool down
+					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+						int coolDown = plugin.getConfig().getInt("storage.cooldown");
+						if (mapCoolDowns.containsKey(player.getName() + " storage circle")) {
+							long diff = (System.currentTimeMillis() - mapCoolDowns.get(player.getName() + " storage circle")) / 1000;
+							if (diff < coolDown) {
+								// still cooling down
+								player.sendMessage(coolDown - diff + " seconds before you can do that again.");
+								return;
+							}
+						}
+						mapCoolDowns.put(player.getName() + " storage circle", System.currentTimeMillis());
+					}
+
 					if (fullWidth - 2 > storageCircleSize) {
 						return;
 					}
@@ -895,23 +1069,55 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 	}
 
+	public static long getSetCircleCooldown(Player player, String setCircle) {
+		int coolDown = plugin.getConfig().getInt("setcircles." + setCircle + ".cooldown");
+		String cdKey = player.getName() + " set circle " + setCircle;
+		long retValue = 0;
+		if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
+			if (mapCoolDowns.containsKey(cdKey)) {
+				long diff = (System.currentTimeMillis() - mapCoolDowns.get(cdKey)) / 1000;
+				retValue = coolDown - diff;
+			}
+		}
+		// System.out.println("cooldown:" + retValue);
+		return retValue;
+	}
+
+	public static void setSetCircleCooldown(String playerName, String setCircleId, Long time) {
+		mapCoolDowns.put(playerName + " set circle " + setCircleId, time);
+	}
+
 	public static void setCircleEffects(Player player, World world, Block actBlock, Block effectBlock, String arrayString) throws IOException {
 		Location effectBlockLocation = effectBlock.getLocation();
 		int cost = 0;
 		if (!hasLearnedCircle(player, arrayString)) {
-			if (learnCircle(player, arrayString, actBlock)) {
+			long cdCheck = getSetCircleCooldown(player, "learn");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can learn another set circle.");
+				return;
+			} else if (learnCircle(player, arrayString, actBlock)) {
 				player.sendMessage("You have successfully learned the circle " + arrayString);
 				return;
 			}
 		}
+
+		// nothing
 		if (arrayString.equals("0"))
 			return;
+
+		// Spawn weapon circle
 		if (arrayString.equals("[1, 1, 1, 1]") && player.hasPermission("geometricmagic.set.1111")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
-			
+
+			long cdCheck = getSetCircleCooldown(player, "1111");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 1111 (" + setCircleArray.get("1111") + ") again.");
+				return;
+			}
+
 			cost = plugin.getConfig().getInt("setcircles.1111.cost");
 			if (cost > 20)
 				cost = 20;
@@ -924,18 +1130,27 @@ public class GeometricMagicPlayerListener implements Listener {
 				int itemID = plugin.getConfig().getInt("setcircles.1111.item");
 				ItemStack item = new ItemStack(itemID);
 				effectBlock.getWorld().dropItem(effectBlockLocation, item);
-				
+				setSetCircleCooldown(player.getName(), "1111", System.currentTimeMillis());
+
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
 		}
+
+		// Repair Circle
 		else if (arrayString.equals("[1, 1, 3, 3]") && player.hasPermission("geometricmagic.set.1133")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
-			
+
+			long cdCheck = getSetCircleCooldown(player, "1133");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 1133 (" + setCircleArray.get("1133") + ") again.");
+				return;
+			}
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -1040,7 +1255,12 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 			}
-		} else if (arrayString.equals("[1, 2, 2, 2]") && player.hasPermission("geometricmagic.set.1222")) {
+			setSetCircleCooldown(player.getName(), "1133", System.currentTimeMillis());
+
+		}
+
+		// Conversion Circle
+		else if (arrayString.equals("[1, 2, 2, 2]") && player.hasPermission("geometricmagic.set.1222")) {
 
 			cost = plugin.getConfig().getInt("setcircles.1222.cost");
 			if (cost > 20)
@@ -1050,7 +1270,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
-			
+
+			long cdCheck = getSetCircleCooldown(player, "1222");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 1222 (" + setCircleArray.get("1222") + ") again.");
+				return;
+			}
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -1064,7 +1290,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						Item droppedItem = (Item) entityList.get(i);
 
 						// Skip items because they don't have values
-						if(droppedItem.getItemStack().getTypeId() > 255) {
+						if (droppedItem.getItemStack().getTypeId() > 255) {
 							player.sendMessage("You can't use items, only blocks");
 							continue;
 						}
@@ -1098,18 +1324,21 @@ public class GeometricMagicPlayerListener implements Listener {
 						}
 						
 						/*
-						 * player.setLevel((valueArray[droppedItem.getItemStack()
-						 * .getTypeId()] * droppedItem.getItemStack()
-						 * .getAmount()) + player.getLevel());
+						 * player.setLevel((valueArray[droppedItem.getItemStack() .getTypeId()] * droppedItem.getItemStack() .getAmount()) + player.getLevel());
 						 */
 					}
 				}
 				redStack.remove();
+				setSetCircleCooldown(player.getName(), "1222", System.currentTimeMillis());
+
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[1, 2, 3, 3]") && player.hasPermission("geometricmagic.set.1233")) {
+		}
+
+		// Philosopher's Stone Circle
+		else if (arrayString.equals("[1, 2, 3, 3]") && player.hasPermission("geometricmagic.set.1233")) {
 
 			cost = plugin.getConfig().getInt("setcircles.1233.cost");
 			if (cost > 20)
@@ -1119,6 +1348,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
+
+			long cdCheck = getSetCircleCooldown(player, "1233");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 1233 (" + setCircleArray.get("1233") + ") again.");
+				return;
+			}
+
 			ItemStack onePortal = new ItemStack(90, 1);
 			int fires = 0;
 			List<Entity> entityList = player.getNearbyEntities(10, 10, 10);
@@ -1145,13 +1381,17 @@ public class GeometricMagicPlayerListener implements Listener {
 						player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					}
 					effectBlock.getWorld().dropItem(effectBlockLocation, onePortal);
+					setSetCircleCooldown(player.getName(), "1233", System.currentTimeMillis());
 				}
 			} else {
 				player.sendMessage("You feel so hungry...");
 			}
 			ItemStack diamondStack = new ItemStack(264, fires);
 			effectBlock.getWorld().dropItem(effectBlockLocation, diamondStack);
-		} else if (arrayString.equals("[1, 2, 3, 4]") && player.hasPermission("geometricmagic.set.1234")) {
+		}
+
+		// Boron Circle
+		else if (arrayString.equals("[1, 2, 3, 4]") && player.hasPermission("geometricmagic.set.1234")) {
 
 			cost = plugin.getConfig().getInt("setcircles.1234.cost");
 			if (cost > 20)
@@ -1161,6 +1401,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
+
+			long cdCheck = getSetCircleCooldown(player, "learn");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 1234 (" + setCircleArray.get("1234") + ") again.");
+				return;
+			}
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -1170,12 +1417,16 @@ public class GeometricMagicPlayerListener implements Listener {
 				ItemStack oneRedstone = new ItemStack(331, amount);
 
 				effectBlock.getWorld().dropItem(effectBlockLocation, oneRedstone);
+				setSetCircleCooldown(player.getName(), "1234", System.currentTimeMillis());
 
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[2, 2, 2, 3]") && player.hasPermission("geometricmagic.set.2223")) {
+		}
+
+		// Soul Circle
+		else if (arrayString.equals("[2, 2, 2, 3]") && player.hasPermission("geometricmagic.set.2223")) {
 
 			cost = plugin.getConfig().getInt("setcircles.2223.cost");
 			if (cost > 20)
@@ -1185,6 +1436,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
+
+			long cdCheck = getSetCircleCooldown(player, "2223");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 2223 (" + setCircleArray.get("2223") + ") again.");
+				return;
+			}
+
 			ItemStack oneRedstone = new ItemStack(331, 1);
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
@@ -1231,15 +1489,25 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 				redStack.remove();
+				setSetCircleCooldown(player.getName(), "2223", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[2, 2, 2, 4]") && player.hasPermission("geometricmagic.set.2224")) {
+		}
+
+		// Homunculus Circle
+		else if (arrayString.equals("[2, 2, 2, 4]") && player.hasPermission("geometricmagic.set.2224")) {
 
 			cost = plugin.getConfig().getInt("setcircles.2224.cost");
 			if (cost > 20)
 				cost = 20;
+
+			long cdCheck = getSetCircleCooldown(player, "2224");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 2224 (" + setCircleArray.get("2224") + ") again.");
+				return;
+			}
 
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
@@ -1248,11 +1516,15 @@ public class GeometricMagicPlayerListener implements Listener {
 				Location spawnLoc = effectBlockLocation;
 				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Enderman.class);
+				setSetCircleCooldown(player.getName(), "2224", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[2, 2, 4, 4]") && player.hasPermission("geometricmagic.set.2244")) {
+		}
+
+		// Safe Teleportation Circle
+		else if (arrayString.equals("[2, 2, 4, 4]") && player.hasPermission("geometricmagic.set.2244")) {
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
@@ -1261,6 +1533,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			cost = plugin.getConfig().getInt("setcircles.2244.cost");
 			if (cost > 20)
 				cost = 20;
+
+			long cdCheck = getSetCircleCooldown(player, "2244");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 2244 (" + setCircleArray.get("2244") + ") again.");
+				return;
+			}
 
 			Location actPoint = effectBlockLocation;
 			int na = 0, nb = 0, ea = 0, eb = 0, sa = 0, sb = 0, wa = 0, wb = 0;
@@ -1324,8 +1602,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			int highestBlock = teleLoc.getWorld().getHighestBlockYAt(teleLoc) + 1;
 			// System.out.println( mathRandX + " " + mathRandZ );
 			player.sendMessage("Safe teleportation altitude is at " + highestBlock);
+			setSetCircleCooldown(player.getName(), "2244", System.currentTimeMillis());
 			return;
-		} else if (arrayString.equals("[2, 3, 3, 3]") && player.hasPermission("geometricmagic.set.2333")) {
+		}
+
+		// Explosion Circle
+		else if (arrayString.equals("[2, 3, 3, 3]") && player.hasPermission("geometricmagic.set.2333")) {
 
 			cost = plugin.getConfig().getInt("setcircles.2333.cost");
 			if (cost > 20)
@@ -1342,6 +1624,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
+
+			long cdCheck = getSetCircleCooldown(player, "2333");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 2333 (" + setCircleArray.get("2333") + ") again.");
+				return;
+			}
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -1356,11 +1645,15 @@ public class GeometricMagicPlayerListener implements Listener {
 				Fireball fireball = effectBlockLocation.getWorld().spawn(effectBlockLocation, Fireball.class);
 				fireball.setIsIncendiary(false);
 				fireball.setYield(4 + size);
+				setSetCircleCooldown(player.getName(), "2333", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[3, 3, 3, 4]") && player.hasPermission("geometricmagic.set.3334")) {
+		}
+
+		// Fire Circle
+		else if (arrayString.equals("[3, 3, 3, 4]") && player.hasPermission("geometricmagic.set.3334")) {
 
 			cost = plugin.getConfig().getInt("setcircles.3334.cost");
 			if (cost > 20)
@@ -1370,6 +1663,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
+
+			long cdCheck = getSetCircleCooldown(player, "3334");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 3334 (" + setCircleArray.get("3334") + ") again.");
+				return;
+			}
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -1380,11 +1680,16 @@ public class GeometricMagicPlayerListener implements Listener {
 				alchemyFiller(Material.AIR, (byte) 0, Material.FIRE, (byte) 0, effectBlock.getRelative((circleSize / 2) * -1, 0, (circleSize / 2) * -1).getLocation(),
 						effectBlock.getRelative(circleSize / 2, circleSize, circleSize / 2).getLocation(), player, false);
 
+				setSetCircleCooldown(player.getName(), "3334", System.currentTimeMillis());
+
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[3, 3, 4, 4]") && player.hasPermission("geometricmagic.set.3344")) {
+		}
+
+		// Fire Explosion Circle
+		else if (arrayString.equals("[3, 3, 4, 4]") && player.hasPermission("geometricmagic.set.3344")) {
 
 			cost = plugin.getConfig().getInt("setcircles.3344.cost");
 			if (cost > 20)
@@ -1401,6 +1706,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
+
+			long cdCheck = getSetCircleCooldown(player, "3344");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 3344 (" + setCircleArray.get("3344") + ") again.");
+				return;
+			}
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
@@ -1415,11 +1727,15 @@ public class GeometricMagicPlayerListener implements Listener {
 				Fireball fireball = effectBlockLocation.getWorld().spawn(effectBlockLocation, Fireball.class);
 				fireball.setIsIncendiary(true);
 				fireball.setYield(4 + size);
+				setSetCircleCooldown(player.getName(), "3344", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[3, 4, 4, 4]") && player.hasPermission("geometricmagic.set.3444")) {
+		}
+
+		// Human Transmutation Circle
+		else if (arrayString.equals("[3, 4, 4, 4]") && player.hasPermission("geometricmagic.set.3444")) {
 
 			cost = plugin.getConfig().getInt("setcircles.3444.cost");
 			if (cost > 20)
@@ -1429,12 +1745,20 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			}
+
+			long cdCheck = getSetCircleCooldown(player, "3444");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 3444 (" + setCircleArray.get("3444") + ") again.");
+				return;
+			}
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				try {
 					if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 						player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 					}
 					humanTransmutation(player);
+					setSetCircleCooldown(player.getName(), "3444", System.currentTimeMillis());
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -1442,7 +1766,10 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[0, 1, 1, 1]") && player.hasPermission("geometricmagic.set.0111")) {
+		}
+
+		// Bed Circle
+		else if (arrayString.equals("[0, 1, 1, 1]") && player.hasPermission("geometricmagic.set.0111")) {
 
 			// using x111 because yml doesn't like 0 as first character
 			cost = plugin.getConfig().getInt("setcircles.x111.cost");
@@ -1453,6 +1780,13 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+
+				long cdCheck = getSetCircleCooldown(player, "x111");
+				if (cdCheck > 0) {
+					player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 0111 (" + setCircleArray.get("0111") + ") again.");
+					return;
+				}
+
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
@@ -1482,21 +1816,32 @@ public class GeometricMagicPlayerListener implements Listener {
 						player.setFoodLevel((int) (player.getFoodLevel() + (cost * philosopherStoneModifier(player))));
 					}
 				}
+				setSetCircleCooldown(player.getName(), "x111", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[0, 0, 4, 4]") && player.hasPermission("geometricmagic.set.0044")) {
+		}
+
+		// Pig Circle
+		else if (arrayString.equals("[0, 0, 4, 4]") && player.hasPermission("geometricmagic.set.0044")) {
 
 			// using x044 because yml doesn't like 0 as first character
 			cost = plugin.getConfig().getInt("setcircles.x044.cost");
 			if (cost > 20)
 				cost = 20;
 
+			long cdCheck = getSetCircleCooldown(player, "x044");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 0044 (" + setCircleArray.get("0044") + ") again.");
+				return;
+			}
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
@@ -1510,21 +1855,32 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Pig.class);
+				setSetCircleCooldown(player.getName(), "x044", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[0, 1, 4, 4]") && player.hasPermission("geometricmagic.set.0144")) {
+		}
+
+		// Sheep Circle
+		else if (arrayString.equals("[0, 1, 4, 4]") && player.hasPermission("geometricmagic.set.0144")) {
 
 			// using x144 because yml doesn't like 0 as first character
 			cost = plugin.getConfig().getInt("setcircles.x144.cost");
 			if (cost > 20)
 				cost = 20;
 
+			long cdCheck = getSetCircleCooldown(player, "x144");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 0144 (" + setCircleArray.get("0144") + ") again.");
+				return;
+			}
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
@@ -1538,21 +1894,32 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Sheep.class);
+				setSetCircleCooldown(player.getName(), "x144", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[0, 2, 4, 4]") && player.hasPermission("geometricmagic.set.0244")) {
+		}
+
+		// Cow Circle
+		else if (arrayString.equals("[0, 2, 4, 4]") && player.hasPermission("geometricmagic.set.0244")) {
 
 			// using x244 because yml doesn't like 0 as first character
 			cost = plugin.getConfig().getInt("setcircles.x244.cost");
 			if (cost > 20)
 				cost = 20;
 
+			long cdCheck = getSetCircleCooldown(player, "x244");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 0244 (" + setCircleArray.get("0244") + ") again.");
+				return;
+			}
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
@@ -1566,21 +1933,32 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Cow.class);
+				setSetCircleCooldown(player.getName(), "x244", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
 			}
-		} else if (arrayString.equals("[0, 3, 4, 4]") && player.hasPermission("geometricmagic.set.0344")) {
+		}
+
+		// Chicken Circle
+		else if (arrayString.equals("[0, 3, 4, 4]") && player.hasPermission("geometricmagic.set.0344")) {
 
 			// using x344 because yml doesn't like 0 as first character
 			cost = plugin.getConfig().getInt("setcircles.x344.cost");
 			if (cost > 20)
 				cost = 20;
 
+			long cdCheck = getSetCircleCooldown(player, "x344");
+			if (cdCheck > 0) {
+				player.sendMessage(ChatColor.RED + "" + cdCheck + " seconds before you can use set circle 0344 (" + setCircleArray.get("0344") + ") again.");
+				return;
+			}
+
 			if (!hasLearnedCircle(player, arrayString)) {
 				player.sendMessage("You have not yet learned circle " + arrayString + "!");
 				return;
 			} else if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
+
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
@@ -1594,6 +1972,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				spawnLoc.add(0.5, 1, 0.5);
 				effectBlock.getWorld().spawn(spawnLoc, Chicken.class);
+				setSetCircleCooldown(player.getName(), "x344", System.currentTimeMillis());
 			} else {
 				player.sendMessage("You feel so hungry...");
 				return;
@@ -1898,6 +2277,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					outputFile.close();
 				}
 				status = true;
+				setSetCircleCooldown(player.getName(), "learn", System.currentTimeMillis());
 			}
 		}
 		redStack.remove();
