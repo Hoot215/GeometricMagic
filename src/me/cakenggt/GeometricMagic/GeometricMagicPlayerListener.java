@@ -29,6 +29,9 @@ import net.h31ix.anticheat.api.AnticheatAPI;
 import net.h31ix.anticheat.manage.CheckType;
 import net.milkbowl.vault.economy.Economy;
 
+import regalowl.hyperconomy.APIBridge;
+import regalowl.hyperconomy.HyperAPI;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -1073,7 +1076,8 @@ public class GeometricMagicPlayerListener implements Listener {
 							return;
 						}
 
-						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId(), droppedItem.getItemStack().getData().getData());
+						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId(), droppedItem.getItemStack().getData().getData(), droppedItem.getItemStack().getDurability(),
+								"sell", player);
 
 						int pay = (valueArray * droppedItem.getItemStack().getAmount());
 
@@ -1799,8 +1803,8 @@ public class GeometricMagicPlayerListener implements Listener {
 		return 0;
 	}
 
-	public static double calculatePay(Material a, byte fromData , Material b, byte toData , Player player) {
-		double pay = (getBlockValue(plugin, a.getId(), (int) fromData) - getBlockValue(plugin, b.getId(), (int) toData));
+	public static double calculatePay(Material a, byte fromData, Material b, byte toData, Player player) {
+		double pay = (getBlockValue(plugin, a.getId(), (int) fromData, (short) 0, "sell", player) - getBlockValue(plugin, b.getId(), (int) toData, (short) 0, "buy", player));
 
 		// Apply Philosopher's Stone to transmutes config variable
 		String stoneConfig = plugin.getConfig().getString("transmutation.stone");
@@ -2267,8 +2271,350 @@ public class GeometricMagicPlayerListener implements Listener {
 		return plugin.getConfig().getString("transmutation.cost").toString();
 	}
 
-	public static Integer getBlockValue(GeometricMagic plugin, int ID, int Data) {
-		return plugin.getConfig().getInt("values." + ID + "." + Data);
+	public static Integer getBlockValue(GeometricMagic plugin, int ID, int Data, short durability, String buyOrSell, Player player) {
+
+		Integer value = 0;
+		Integer multiplier = 1;
+
+		// translate items with different ids or data values when placed
+		// http://www.minecraftwiki.net/wiki/Data_values#Data
+		switch (ID) {
+		case 0:
+			// air
+			return 0;
+		case 29:
+			// sticky piston
+			Data = 7;
+			durability = 7;
+			break;
+		case 33:
+			// piston
+			Data = 7;
+			durability = 7;
+			break;
+		case 34:
+			// piston extension
+			ID = 33;
+			Data = 7;
+			durability = 7;
+			break;
+		case 23:
+			// dispenser
+			Data = 0;
+			break;
+		case 55:
+			// redstone wire
+			ID = 331;
+			Data = 0;
+			break;
+		case 93:
+			// repeater off
+			ID = 356;
+			Data = 0;
+			break;
+		case 94:
+			// repeater on
+			ID = 356;
+			Data = 0;
+			break;
+		case 69:
+			// lever
+			Data = 0;
+			break;
+		case 75:
+			// redstone torch off
+			Data = 0;
+			break;
+		case 76:
+			// redstone torch on
+			Data = 0;
+			break;
+		case 77:
+			// button
+			Data = 0;
+			break;
+		case 96:
+			// trapdoor
+			Data = 0;
+			break;
+		case 131:
+			// tripwire hook
+			Data = 0;
+			break;
+		case 64:
+			// wooden door
+			ID = 324;
+			Data = 0;
+			break;
+		case 71:
+			// iron door
+			ID = 268;
+			Data = 0;
+			break;
+		case 107:
+			// fence gate
+			Data = 0;
+			break;
+		case 70:
+			// wooden pressureplate
+			Data = 0;
+			break;
+		case 72:
+			// stone pressureplate
+			Data = 0;
+			break;
+		case 43:
+			// doublestep
+			ID = 44;
+			multiplier = 2;
+			break;
+		case 125:
+			// wooden doublestep
+			ID = 126;
+			multiplier = 2;
+			break;
+		case 53:
+			// oak wood stairs
+			Data = 0;
+			break;
+		case 67:
+			// cobblestone stairs
+			Data = 0;
+			break;
+		case 108:
+			// brick stairs
+			Data = 0;
+			break;
+		case 109:
+			// smooth brich stairs
+			Data = 0;
+			break;
+		case 114:
+			// nether brick stairs
+			Data = 0;
+			break;
+		case 128:
+			// sandstone stairs
+			Data = 0;
+			break;
+		case 134:
+			// spruce wood stairs
+			Data = 0;
+			break;
+		case 135:
+			// birch wood stairs
+			Data = 0;
+			break;
+		case 136:
+			// jungle wood stairs
+			Data = 0;
+			break;
+		case 86:
+			// pumpkin
+			Data = 0;
+			break;
+		case 91:
+			// jack'o'lantern
+			Data = 0;
+			break;
+		case 54:
+			// chest
+			Data = 0;
+			break;
+		case 61:
+			// furnace
+			Data = 0;
+			break;
+		case 84:
+			// jukebox
+			Data = 0;
+			break;
+		case 65:
+			// ladder
+			Data = 0;
+			break;
+		case 63:
+			// sign
+			ID = 323;
+			Data = 0;
+			break;
+		case 130:
+			// ender chest
+			Data = 0;
+			break;
+		case 106:
+			// vines
+			Data = 0;
+			break;
+		case 26:
+			// bed
+			ID = 355;
+			Data = 0;
+			break;
+		case 124:
+			// redstone lamp on
+			ID = 123;
+			Data = 0;
+			break;
+		case 27:
+			// powered rail
+			Data = 0;
+			break;
+		case 28:
+			// detector rail
+			Data = 0;
+			break;
+		case 66:
+			// minecraft track
+			Data = 0;
+			break;
+		case 118:
+			// cauldron
+			ID = 380;
+			Data = 0;
+			break;
+		case 117:
+			// brewing stand
+			ID = 379;
+			Data = 0;
+			break;
+		case 17:
+			// logs
+			if (Data == 8)
+				Data = 0;
+			if (Data == 9)
+				Data = 1;
+			if (Data == 10)
+				Data = 2;
+			if (Data == 11)
+				Data = 3;
+			break;
+		case 18:
+			// leaves
+			if (Data == 12 || Data == 4) {
+				Data = 4;
+				durability = 4;
+			}
+			if (Data == 13 || Data == 5) {
+				Data = 5;
+				durability = 5;
+			}
+			if (Data == 14 || Data == 6) {
+				Data = 6;
+				durability = 6;
+			}
+			if (Data == 15 || Data == 7) {
+				Data = 7;
+				durability = 7;
+			}
+			break;
+		case 132:
+			// tripwire
+			ID = 287;
+			Data = 0;
+			break;
+		case 9:
+			// water
+			ID = 326;
+			Data = 0;
+			break;
+		case 10:
+			// lava
+			ID = 327;
+			Data = 0;
+			break;
+		case 11:
+			// lava
+			ID = 327;
+			Data = 0;
+			break;
+		case 78:
+			// snow
+			ID = 332;
+			Data = 0;
+			break;
+		case 51:
+			// fire
+			Data = 0;
+			break;
+		case 31:
+			// grass
+			Data = 1;
+			durability = 1;
+			break;
+		case 92:
+			// cake
+			ID = 354;
+			Data = 0;
+			break;
+		case 83:
+			// sugarcane
+			ID = 338;
+			Data = 0;
+			break;
+		case 104:
+			// pumpkin sprout
+			ID = 361;
+			Data = 0;
+			durability = 0;
+			break;
+		case 105:
+			// melon sprout
+			ID = 362;
+			Data = 0;
+			durability = 0;
+			break;
+		case 59:
+			// seeds
+			ID = 295;
+			Data = 0;
+			durability = 0;
+			break;
+		case 60:
+			// soil
+			ID = 3;
+			Data = 0;
+			durability = 0;
+			break;
+		case 127:
+			// cocoa beans
+			ID = 351;
+			Data = 3;
+			durability = 3;
+			break;
+		case 115:
+			// nether wart
+			ID = 317;
+			Data = 0;
+			durability = 0;
+			break;
+		default:
+			break;
+		}
+
+		if (plugin.getConfig().getString("valuesource").equals("hyperconomy")) {
+
+			HyperAPI hyperApi = new APIBridge();
+
+			if (buyOrSell == "buy") {
+				// int id, int damageValue, int amount, String nameOfEconomy
+				value = (int) hyperApi.getTruePurchasePrice(ID, durability, 1, plugin.getConfig().getString("hyperconomy.economy")) * multiplier;
+			} else if (buyOrSell == "sell") {
+				// int id, int damageValue, int amount, Player player
+				value = (int) hyperApi.getTrueSaleValue(ID, durability, 1, player) * multiplier;
+			} else {
+				return 0;
+			}
+		} else if (plugin.getConfig().getString("valuesource").equals("dynamiceconomy")) {
+			// Dynamic Economy support not yet implemented (plugin is outdated).
+			value = plugin.getConfig().getInt("values." + ID + "." + Data);
+		} else {
+			value = plugin.getConfig().getInt("values." + ID + "." + Data);
+		}
+
+		System.out.println("value: " + value);
+
+		return value;
 	}
 
 	// Lyneira's Code Start
