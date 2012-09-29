@@ -19,6 +19,17 @@
 # DO NOT MODIFY THIS VALUE!
 version: 2.8.5
 
+# Source for item values
+# Valid values are: config, hyperconomy
+# config uses values from the VALUES SECTION in this file below
+# hyperconomy uses values from the Hyperconomy plugin
+valuesource: config
+
+hyperconomy:
+
+    # the name of the economy to use
+    economy: default
+
 # GENERAL SECTION
 general:
 
