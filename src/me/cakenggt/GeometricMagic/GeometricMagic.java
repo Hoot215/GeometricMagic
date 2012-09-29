@@ -46,6 +46,18 @@ public class GeometricMagic extends JavaPlugin {
 	public boolean autoUpdateNotify;
 	public boolean upToDate = true;
 
+	private ChatColor getColor(Player player, String circle) {
+		ChatColor color = ChatColor.GREEN;
+		try {
+			if (!GeometricMagicPlayerListener.hasLearnedCircle(player, circle)) {
+				color = ChatColor.RED;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return color;
+	}
+
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
 		// If the player typed /setcircle then do the following...
@@ -124,23 +136,40 @@ public class GeometricMagic extends JavaPlugin {
 			}
 		} else if (cmd.getName().equalsIgnoreCase("circles")) {
 			if (sender.hasPermission("geometricmagic.command.circles")) {
-				sender.sendMessage(ChatColor.GREEN + "1111" + ChatColor.RESET + " Spawn Weapon Circle");
-				sender.sendMessage(ChatColor.GREEN + "1133" + ChatColor.RESET + " Repair Circle");
-				sender.sendMessage(ChatColor.GREEN + "1222" + ChatColor.RESET + " Conversion Circle");
-				sender.sendMessage(ChatColor.GREEN + "1233" + ChatColor.RESET + " Philosopher's Stone Circle");
-				sender.sendMessage(ChatColor.GREEN + "1234" + ChatColor.RESET + " Boron Circle");
-				sender.sendMessage(ChatColor.GREEN + "2223" + ChatColor.RESET + " Soul Circle");
-				sender.sendMessage(ChatColor.GREEN + "2224" + ChatColor.RESET + " Homunculus Circle");
-				sender.sendMessage(ChatColor.GREEN + "2244" + ChatColor.RESET + " Safe Teleportation Circle");
-				sender.sendMessage(ChatColor.GREEN + "2333" + ChatColor.RESET + " Explosion Circle");
-				sender.sendMessage(ChatColor.GREEN + "3334" + ChatColor.RESET + " Fire Circle");
-				sender.sendMessage(ChatColor.GREEN + "3344" + ChatColor.RESET + " Fire Explosion Circle");
-				sender.sendMessage(ChatColor.GREEN + "3444" + ChatColor.RESET + " Human Transmutation Circle");
-				sender.sendMessage(ChatColor.GREEN + "0111" + ChatColor.RESET + " Bed Circle");
-				sender.sendMessage(ChatColor.GREEN + "0044" + ChatColor.RESET + " Pig Circle");
-				sender.sendMessage(ChatColor.GREEN + "0144" + ChatColor.RESET + " Sheep Circle");
-				sender.sendMessage(ChatColor.GREEN + "0244" + ChatColor.RESET + " Cow Circle");
-				sender.sendMessage(ChatColor.GREEN + "0344" + ChatColor.RESET + " Chicken Circle");
+				if (sender.hasPermission("geometricmagic.set.1111"))
+					sender.sendMessage(getColor((Player) sender, "[1, 1, 1, 1]") + "1111" + ChatColor.RESET + " Item Circle");
+				if (sender.hasPermission("geometricmagic.set.1133"))
+					sender.sendMessage(getColor((Player) sender, "[1, 1, 3, 3]") + "1133" + ChatColor.RESET + " Repair Circle");
+				if (sender.hasPermission("geometricmagic.set.1222"))
+					sender.sendMessage(getColor((Player) sender, "[1, 2, 2, 2]") + "1222" + ChatColor.RESET + " Conversion Circle");
+				if (sender.hasPermission("geometricmagic.set.1233"))
+					sender.sendMessage(getColor((Player) sender, "[1, 2, 3, 3]") + "1233" + ChatColor.RESET + " Philosopher's Stone Circle");
+				if (sender.hasPermission("geometricmagic.set.1234"))
+					sender.sendMessage(getColor((Player) sender, "[1, 2, 3, 4]") + "1234" + ChatColor.RESET + " Boron Circle");
+				if (sender.hasPermission("geometricmagic.set.2223"))
+					sender.sendMessage(getColor((Player) sender, "[2, 2, 2, 3]") + "2223" + ChatColor.RESET + " Soul Circle");
+				if (sender.hasPermission("geometricmagic.set.2224"))
+					sender.sendMessage(ChatColor.GREEN + "2224" + ChatColor.RESET + " Homunculus Circle");
+				if (sender.hasPermission("geometricmagic.set.2244"))
+					sender.sendMessage(getColor((Player) sender, "[2, 2, 4, 4]") + "2244" + ChatColor.RESET + " Safe Teleportation Circle");
+				if (sender.hasPermission("geometricmagic.set.2333"))
+					sender.sendMessage(getColor((Player) sender, "[2, 3, 3, 3]") + "2333" + ChatColor.RESET + " Explosion Circle");
+				if (sender.hasPermission("geometricmagic.set.3334"))
+					sender.sendMessage(getColor((Player) sender, "[3, 3, 3, 4]") + "3334" + ChatColor.RESET + " Fire Circle");
+				if (sender.hasPermission("geometricmagic.set.3344"))
+					sender.sendMessage(getColor((Player) sender, "[3, 3, 4, 4]") + "3344" + ChatColor.RESET + " Fire Explosion Circle");
+				if (sender.hasPermission("geometricmagic.set.3444"))
+					sender.sendMessage(getColor((Player) sender, "[3, 4, 4, 4]") + "3444" + ChatColor.RESET + " Human Transmutation Circle");
+				if (sender.hasPermission("geometricmagic.set.0111"))
+					sender.sendMessage(getColor((Player) sender, "[0, 1, 1, 1]") + "0111" + ChatColor.RESET + " Bed Circle");
+				if (sender.hasPermission("geometricmagic.set.0044"))
+					sender.sendMessage(getColor((Player) sender, "[0, 0, 4, 4]") + "0044" + ChatColor.RESET + " Pig Circle");
+				if (sender.hasPermission("geometricmagic.set.0144"))
+					sender.sendMessage(getColor((Player) sender, "[0, 1, 4, 4]") + "0144" + ChatColor.RESET + " Sheep Circle");
+				if (sender.hasPermission("geometricmagic.set.0244"))
+					sender.sendMessage(getColor((Player) sender, "[0, 2, 4, 4]") + "0244" + ChatColor.RESET + " Cow Circle");
+				if (sender.hasPermission("geometricmagic.set.0344"))
+					sender.sendMessage(getColor((Player) sender, "[0, 3, 4, 4]") + "0344" + ChatColor.RESET + " Chicken Circle");
 			} else
 				sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
 			return true;
