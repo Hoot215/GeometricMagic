@@ -160,6 +160,11 @@ public class GeometricMagicPlayerListener implements Listener {
 		ItemStack inHand = event.getPlayer().getItemInHand();
 		Material inHandType = inHand.getType();
 
+		// do nothing if they don't have permission to use set circles
+		if (!player.hasPermission("geometricmagic.set") && inHandType == Material.FLINT) {
+			return;
+		}
+		
 		if ((sacrificed && (inHandType == Material.FLINT || (actBlock.getType() == Material.REDSTONE_WIRE && inHand.getAmount() == 0))) && !player.hasPermission("geometricmagic.bypass.sacrifice")) {
 			player.sendMessage("You have sacrificed your alchemy abilities forever.");
 			return;
