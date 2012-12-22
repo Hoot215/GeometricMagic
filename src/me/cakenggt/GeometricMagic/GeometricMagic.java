@@ -71,7 +71,7 @@ public class GeometricMagic extends JavaPlugin {
 					player.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
 					return true;
 				}
-				
+
 				boolean sacrificed = false;
 
 				if (!player.hasPermission("geometricmagic.bypass.sacrifice")) {
@@ -100,7 +100,7 @@ public class GeometricMagic extends JavaPlugin {
 					sender.sendMessage(ChatColor.RED + cmd.getUsage());
 					return true;
 				} else if (args.length == 0 && !hasFlint && sacrifices) {
-					// they don't have flint so give them one 
+					// they don't have flint so give them one
 					ItemStack oneFlint = new ItemStack(318, 1);
 					player.getWorld().dropItem(player.getLocation(), oneFlint);
 					return true;
@@ -189,26 +189,21 @@ public class GeometricMagic extends JavaPlugin {
 					}
 					sender.sendMessage(ChatColor.GREEN + "******************************************");
 					return true;
-				}
-				else if (args.length == 1) {
+				} else if (args.length == 1) {
 					if (args[0].equalsIgnoreCase("reload")) {
 						if (sender.hasPermission("geometricmagic.command.geometricmagic.reload")) {
 							reloadConfig();
 							sender.sendMessage(ChatColor.GREEN + "Config reload successfully!");
 							return true;
-						}
-						else {
+						} else {
 							sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
 							return true;
 						}
-					}
-					else
+					} else
 						return false;
-				}
-				else if (args.length > 1)
+				} else if (args.length > 1)
 					return false;
-			}
-			else {
+			} else {
 				sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
 				return true;
 			}

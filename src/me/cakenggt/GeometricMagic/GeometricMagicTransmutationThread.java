@@ -62,7 +62,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 		playerName = playerNameString;
 		charge = chargeBool;
 	}
-	
+
 	public void run() {
 		if (start.getX() < end.getX()) {
 			if (start.getZ() < end.getZ()) {
@@ -79,8 +79,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				for (int x = (int) start.getX(); x <= end.getX(); x++) {
 					for (int y = (int) start.getY(); y <= end.getY(); y++) {
 						for (int z = (int) start.getZ(); z >= end.getZ(); z--) {
@@ -95,8 +94,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			if (start.getZ() < end.getZ()) {
 				for (int x = (int) start.getX(); x >= end.getX(); x--) {
 					for (int y = (int) start.getY(); y <= end.getY(); y++) {
@@ -111,8 +109,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				for (int x = (int) start.getX(); x >= end.getX(); x--) {
 					for (int y = (int) start.getY(); y <= end.getY(); y++) {
 						for (int z = (int) start.getZ(); z >= end.getZ(); z--) {
@@ -129,16 +126,15 @@ public class GeometricMagicTransmutationThread implements Runnable {
 			}
 		}
 	}
-	
-	public void transmuteBlock(final Material a, final byte fromData, final Material b, final byte toData,
-										final Location startBlockLoc, final String playerName, final boolean charge) {
-		
+
+	public void transmuteBlock(final Material a, final byte fromData, final Material b, final byte toData, final Location startBlockLoc, final String playerName, final boolean charge) {
+
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
 				Player player = plugin.getServer().getPlayer(playerName);
 				Block startBlock = startBlockLoc.getBlock();
 				double pay = GeometricMagicPlayerListener.calculatePay(a, fromData, b, toData, player);
-				
+
 				// exempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 					AnticheatAPI.exemptPlayer(player, CheckType.FAST_PLACE);
@@ -146,7 +142,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 					AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
 					AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 				}
-				
+
 				if (player != null) {
 					if (startBlock.getType() == a && startBlock.getData() == fromData) {
 
@@ -154,9 +150,9 @@ public class GeometricMagicTransmutationThread implements Runnable {
 
 							// Block break
 							if (a != Material.AIR && b == Material.AIR) {
-								
+
 								if (!GeometricMagicPlayerListener.checkBreakBlacklist(a.getId())) {
-									
+
 									Location blockLocation = startBlock.getLocation();
 
 									if (GeometricMagicPlayerListener.checkBlockBreakSimulation(blockLocation, player)) {
@@ -182,7 +178,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 										}
 									}
 								}
-								
+
 								else {
 									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
 									return;
@@ -191,9 +187,9 @@ public class GeometricMagicTransmutationThread implements Runnable {
 
 							// Block place
 							else if (a == Material.AIR && b != Material.AIR) {
-								
+
 								if (!GeometricMagicPlayerListener.checkPlaceBlacklist(b.getId())) {
-									
+
 									Location blockLocation = startBlock.getLocation();
 									int blockID = b.getId();
 									byte blockData = toData;
@@ -221,7 +217,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 										}
 									}
 								}
-								
+
 								else {
 									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
 									return;
@@ -232,7 +228,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 							else if (a != Material.AIR && b != Material.AIR) {
 
 								if (!GeometricMagicPlayerListener.checkBreakBlacklist(a.getId()) && !GeometricMagicPlayerListener.checkPlaceBlacklist(b.getId())) {
-									
+
 									Location blockLocation = startBlock.getLocation();
 									int blockID = b.getId();
 									byte blockData = toData;
@@ -261,12 +257,12 @@ public class GeometricMagicTransmutationThread implements Runnable {
 										}
 									}
 								}
-								
+
 								else {
 									player.sendMessage(ChatColor.RED + "[GeometricMagic] That block is blacklisted");
 									return;
 								}
-								
+
 							}
 						} else {
 							player.sendMessage(ChatColor.RED + "You do not have enough power to create that block");
@@ -276,7 +272,7 @@ public class GeometricMagicTransmutationThread implements Runnable {
 						// System.out.println("[GeometricMagic] DEBUG - Block Data: " + (int) startBlock.getData() + ", A Data: " + (int) fromData + ", B Data: " + (int) toData);
 						return;
 				}
-				
+
 				// unexempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 					AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);

@@ -148,8 +148,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		Block actBlock = player.getLocation().getBlock();
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (event.getClickedBlock().getType() == Material.WORKBENCH && (sacrifices && !sacrificed) && !player.hasPermission("geometricmagic.bypass.crafting")
-					&& player.hasPermission("geometricmagic.set")) {
+			if (event.getClickedBlock().getType() == Material.WORKBENCH && (sacrifices && !sacrificed) && !player.hasPermission("geometricmagic.bypass.crafting") && player.hasPermission("geometricmagic.set")) {
 				// cancel event instead of turning block into air
 				player.sendMessage("You have already sacrificed your crafting abilities. You must sacrifice your alchemy forever to get them back by performing another human transmutation.");
 				event.setCancelled(true);
@@ -164,7 +163,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		if (!player.hasPermission("geometricmagic.set") && inHandType == Material.FLINT) {
 			return;
 		}
-		
+
 		if ((sacrificed && (inHandType == Material.FLINT || (actBlock.getType() == Material.REDSTONE_WIRE && inHand.getAmount() == 0))) && !player.hasPermission("geometricmagic.bypass.sacrifice")) {
 			player.sendMessage("You have sacrificed your alchemy abilities forever.");
 			return;
@@ -205,7 +204,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else {
 				return;
 			}
-			
+
 			try {
 				// exempt player from AntiCheat check
 				if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
@@ -217,8 +216,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				if (circle.equals("0")) {
 					circleChooser(player, world, actBlock);
-				}
-				else
+				} else
 					setCircleEffects(player, player.getWorld(), player.getLocation().getBlock(), actBlock, circle);
 
 				// unexempt player from AntiCheat check
@@ -251,8 +249,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		Block westBlock = actBlock.getRelative(-1, 0, 0);
 
 		// teleportation circle
-		if (northBlock.getType() == Material.REDSTONE_WIRE && southBlock.getType() == Material.REDSTONE_WIRE && eastBlock.getType() == Material.REDSTONE_WIRE
-				&& westBlock.getType() == Material.REDSTONE_WIRE) {
+		if (northBlock.getType() == Material.REDSTONE_WIRE && southBlock.getType() == Material.REDSTONE_WIRE && eastBlock.getType() == Material.REDSTONE_WIRE && westBlock.getType() == Material.REDSTONE_WIRE) {
 			if (player.hasPermission("geometricmagic.teleportation")) {
 				// System.out.println("teleportation");
 				teleportationCircle(player, world, actBlock);
@@ -260,10 +257,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You do not have permission to use this circle");
 
 			// micro circle
-		} else if (northBlock.getType() != Material.REDSTONE_WIRE && southBlock.getType() != Material.REDSTONE_WIRE && eastBlock.getType() != Material.REDSTONE_WIRE
-				&& westBlock.getType() != Material.REDSTONE_WIRE && actBlock.getRelative(-3, 0, 0).getType() != Material.REDSTONE_WIRE
-				&& actBlock.getRelative(3, 0, 0).getType() != Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, -3).getType() != Material.REDSTONE_WIRE
-				&& actBlock.getRelative(0, 0, 3).getType() != Material.REDSTONE_WIRE) {
+		} else if (northBlock.getType() != Material.REDSTONE_WIRE && southBlock.getType() != Material.REDSTONE_WIRE && eastBlock.getType() != Material.REDSTONE_WIRE && westBlock.getType() != Material.REDSTONE_WIRE && actBlock.getRelative(-3, 0, 0).getType() != Material.REDSTONE_WIRE && actBlock.getRelative(3, 0, 0).getType() != Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, -3).getType() != Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, 3).getType() != Material.REDSTONE_WIRE) {
 			if (player.hasPermission("geometricmagic.micro")) {
 				// System.out.println("micro");
 				microCircle(player, world, actBlock);
@@ -271,8 +265,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				player.sendMessage("You do not have permission to use this circle");
 
 			// transmutation circle
-		} else if ((northBlock.getType() == Material.REDSTONE_WIRE && southBlock.getType() == Material.REDSTONE_WIRE && eastBlock.getType() != Material.REDSTONE_WIRE && westBlock.getType() != Material.REDSTONE_WIRE)
-				|| (northBlock.getType() != Material.REDSTONE_WIRE && southBlock.getType() != Material.REDSTONE_WIRE && eastBlock.getType() == Material.REDSTONE_WIRE && westBlock.getType() == Material.REDSTONE_WIRE)) {
+		} else if ((northBlock.getType() == Material.REDSTONE_WIRE && southBlock.getType() == Material.REDSTONE_WIRE && eastBlock.getType() != Material.REDSTONE_WIRE && westBlock.getType() != Material.REDSTONE_WIRE) || (northBlock.getType() != Material.REDSTONE_WIRE && southBlock.getType() != Material.REDSTONE_WIRE && eastBlock.getType() == Material.REDSTONE_WIRE && westBlock.getType() == Material.REDSTONE_WIRE)) {
 
 			// transmutation circle size permissions
 			// - allows use of all circles smaller than then the max
@@ -292,7 +285,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				transmutationCircleSize = 0;
 				player.sendMessage("You do not have permission to use this circle");
 			}
-			
+
 			// Storage circle size permissions
 			int storageCircleSize = 1;
 			if (player.hasPermission("geometricmagic.storage.9")) {
@@ -309,7 +302,7 @@ public class GeometricMagicPlayerListener implements Listener {
 				storageCircleSize = 0;
 				player.sendMessage("You do not have permission to use this circle");
 			}
-			
+
 			int circleSize = (transmutationCircleSize > storageCircleSize) ? transmutationCircleSize : storageCircleSize;
 
 			// System.out.println("circleSize:" + circleSize);
@@ -325,10 +318,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			}
 
 			// set circle
-		} else if (northBlock.getType() != Material.REDSTONE_WIRE && southBlock.getType() != Material.REDSTONE_WIRE && eastBlock.getType() != Material.REDSTONE_WIRE
-				&& westBlock.getType() != Material.REDSTONE_WIRE && actBlock.getRelative(-3, 0, 0).getType() == Material.REDSTONE_WIRE
-				&& actBlock.getRelative(3, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, -3).getType() == Material.REDSTONE_WIRE
-				&& actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
+		} else if (northBlock.getType() != Material.REDSTONE_WIRE && southBlock.getType() != Material.REDSTONE_WIRE && eastBlock.getType() != Material.REDSTONE_WIRE && westBlock.getType() != Material.REDSTONE_WIRE && actBlock.getRelative(-3, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(3, 0, 0).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, -3).getType() == Material.REDSTONE_WIRE && actBlock.getRelative(0, 0, 3).getType() == Material.REDSTONE_WIRE) {
 
 			if (player.hasPermission("geometricmagic.set")) {
 
@@ -536,9 +526,9 @@ public class GeometricMagicPlayerListener implements Listener {
 		teleLoc.setZ(randZ);
 
 		// wait for chunk to be loaded before teleporting player
-		//while (teleLoc.getWorld().getChunkAt(teleLoc).isLoaded() == false) {
+		// while (teleLoc.getWorld().getChunkAt(teleLoc).isLoaded() == false) {
 		// teleLoc.getWorld().getChunkAt(teleLoc).load(true);
-		//}
+		// }
 		// hopefully a bit more efficient
 		Chunk chunk = teleLoc.getChunk();
 		while(!chunk.isLoaded() || !chunk.load(true));
@@ -634,7 +624,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 		List<Entity> entitiesList = player.getNearbyEntities(100, 32, 100);
 		int limitCount = plugin.getConfig().getInt("setcircles.limitarrows");
-		
+
 		for (int i = 0; i < entitiesList.size() && limitCount != 0; i++) {
 			if (entitiesList.get(i) instanceof Arrow) {
 				Arrow shotArrow = (Arrow) entitiesList.get(i);
@@ -659,8 +649,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static boolean canTransmute(Player player) {
-		if (player.hasPermission("geometricmagic.transmutation.*") || player.hasPermission("geometricmagic.transmutation.1") || player.hasPermission("geometricmagic.transmutation.3")
-				|| player.hasPermission("geometricmagic.transmutation.5") || player.hasPermission("geometricmagic.transmutation.7") || player.hasPermission("geometricmagic.transmutation.9")) {
+		if (player.hasPermission("geometricmagic.transmutation.*") || player.hasPermission("geometricmagic.transmutation.1") || player.hasPermission("geometricmagic.transmutation.3") || player.hasPermission("geometricmagic.transmutation.5") || player.hasPermission("geometricmagic.transmutation.7") || player.hasPermission("geometricmagic.transmutation.9")) {
 			return true;
 		} else {
 			return false;
@@ -668,8 +657,7 @@ public class GeometricMagicPlayerListener implements Listener {
 	}
 
 	public static boolean canUseStorage(Player player) {
-		if (player.hasPermission("geometricmagic.storage.*") || player.hasPermission("geometricmagic.storage.1") || player.hasPermission("geometricmagic.storage.3")
-				|| player.hasPermission("geometricmagic.storage.5") || player.hasPermission("geometricmagic.storage.7") || player.hasPermission("geometricmagic.storage.9")) {
+		if (player.hasPermission("geometricmagic.storage.*") || player.hasPermission("geometricmagic.storage.1") || player.hasPermission("geometricmagic.storage.3") || player.hasPermission("geometricmagic.storage.5") || player.hasPermission("geometricmagic.storage.7") || player.hasPermission("geometricmagic.storage.9")) {
 			return true;
 		} else {
 			return false;
@@ -697,8 +685,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			int dimensionOfEffect = (fullWidth - 2) * (fullWidth - 2);
 			if (actBlock.getRelative((fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// east
-				if (actBlock.getRelative((halfWidth - 1), 0, halfWidth).getType() == Material.REDSTONE_WIRE
-						&& actBlock.getRelative((halfWidth - 1), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+				if (actBlock.getRelative((halfWidth - 1), 0, halfWidth).getType() == Material.REDSTONE_WIRE && actBlock.getRelative((halfWidth - 1), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
 
 					// transmute cool down
 					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
@@ -766,8 +753,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (actBlock.getRelative(-1 * (fullWidth - 1), 0, 0).getType() == Material.REDSTONE_WIRE) {
 				// west
 				// System.out.println("transmutationCircle west");
-				if (actBlock.getRelative((-1 * (halfWidth - 1)), 0, halfWidth).getType() == Material.REDSTONE_WIRE
-						&& actBlock.getRelative((-1 * (halfWidth - 1)), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
+				if (actBlock.getRelative((-1 * (halfWidth - 1)), 0, halfWidth).getType() == Material.REDSTONE_WIRE && actBlock.getRelative((-1 * (halfWidth - 1)), 0, (-1 * halfWidth)).getType() == Material.REDSTONE_WIRE) {
 
 					// transmute cool down
 					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
@@ -841,8 +827,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			if (actBlock.getRelative(0, 0, -1 * (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// north
 				// System.out.println("transmutationCircle north");
-				if (actBlock.getRelative(halfWidth, 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE
-						&& actBlock.getRelative((-1 * halfWidth), 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE) {
+				if (actBlock.getRelative(halfWidth, 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE && actBlock.getRelative((-1 * halfWidth), 0, (-1 * (halfWidth - 1))).getType() == Material.REDSTONE_WIRE) {
 
 					// transmute cool down
 					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
@@ -906,8 +891,7 @@ public class GeometricMagicPlayerListener implements Listener {
 			} else if (actBlock.getRelative(0, 0, (fullWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 				// south
 				// System.out.println("transmutationCircle south");
-				if (actBlock.getRelative(halfWidth, 0, (halfWidth - 1)).getType() == Material.REDSTONE_WIRE
-						&& actBlock.getRelative((-1 * halfWidth), 0, (halfWidth - 1)).getType() == Material.REDSTONE_WIRE) {
+				if (actBlock.getRelative(halfWidth, 0, (halfWidth - 1)).getType() == Material.REDSTONE_WIRE && actBlock.getRelative((-1 * halfWidth), 0, (halfWidth - 1)).getType() == Material.REDSTONE_WIRE) {
 
 					// transmute cool down
 					if (!player.hasPermission("geometricmagic.bypass.cooldown")) {
@@ -1002,7 +986,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 
 		limitCount = limit;
-		
+
 		if (remote) {
 			for (int i = 0; i < entitiesList.size() && limitCount != 0; i++) {
 				if (entitiesList.get(i) instanceof Arrow) {
@@ -1126,12 +1110,12 @@ public class GeometricMagicPlayerListener implements Listener {
 			cost = plugin.getConfig().getInt("setcircles.1111.cost");
 			if (cost > 20)
 				cost = 20;
-			
+
 			if (player.getFoodLevel() >= (cost * philosopherStoneModifier(player))) {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				
+
 				int itemID = plugin.getConfig().getInt("setcircles.1111.item");
 				ItemStack item = new ItemStack(itemID);
 				effectBlock.getWorld().dropItem(effectBlockLocation, item);
@@ -1167,66 +1151,73 @@ public class GeometricMagicPlayerListener implements Listener {
 			for (int i = 0; i < repairEntities.size(); i++) {
 				if (repairEntities.get(i) instanceof Item) {
 					Item droppedItem = (Item) repairEntities.get(i);
+					ItemStack droppedItemStack = droppedItem.getItemStack();
 
 					// Item data value
-					int itemCode = droppedItem.getItemStack().getTypeId();
+					int itemCode = droppedItemStack.getTypeId();
+
+					// Item dye
+					Color itemDyeColor = null;
+					if (Armor.isApplicable(droppedItemStack)) {
+						itemDyeColor = Armor.getColor(droppedItemStack);
+						System.out.println("First:" + itemDyeColor);
+					}
 
 					// Enchantments
-					Map<Enchantment, Integer> effects = droppedItem.getItemStack().getEnchantments();
+					Map<Enchantment, Integer> effects = droppedItemStack.getEnchantments();
 
 					// Get cost
-					if ((256 <= itemCode && itemCode <= 258) || (267 <= itemCode && itemCode <= 279) || (283 <= itemCode && itemCode <= 286) || (290 <= itemCode && itemCode <= 294)
-							|| (298 <= itemCode && itemCode <= 317) || itemCode == 259 || itemCode == 346 || itemCode == 359 || itemCode == 261) {
+					if ((256 <= itemCode && itemCode <= 258) || (267 <= itemCode && itemCode <= 279) || (283 <= itemCode && itemCode <= 286) || (290 <= itemCode && itemCode <= 294) || (298 <= itemCode && itemCode <= 317) || itemCode == 259 || itemCode == 346 || itemCode == 359 || itemCode == 261) {
 						if ((256 <= itemCode && itemCode <= 258) || itemCode == 267 || itemCode == 292)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if ((268 <= itemCode && itemCode <= 271) || itemCode == 290)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if ((272 <= itemCode && itemCode <= 275) || itemCode == 291)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if ((276 <= itemCode && itemCode <= 279) || itemCode == 293)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if ((283 <= itemCode && itemCode <= 286) || itemCode == 294)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 298)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 299)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 300)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 301)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 306)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 307)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 308)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 309)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 310)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 311)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 312)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 313)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 314)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 315)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 316)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 317)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 259)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 346)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 359)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						if (itemCode == 261)
-							cost = droppedItem.getItemStack().getDurability();
+							cost = droppedItemStack.getDurability();
 						cost = cost / 50;
 
 						// Make sure cost is not more than 20
@@ -1242,13 +1233,19 @@ public class GeometricMagicPlayerListener implements Listener {
 							// enchant the item
 							newItem.addEnchantments(effects);
 
+							if(itemDyeColor != null) {
+								System.out.println("Second:" + itemDyeColor);
+								try {
+									Armor.setColor(newItem, itemDyeColor);
+								} catch (Exception e) {
+									System.out.println("Exception:" + itemDyeColor);
+									System.out.println(e);
+								}
+							}
+							
 							droppedItem.remove();
 
-							// TODO this didn't work...
-							// drop items slightly above the block so they don't go under it
-							// will it also stop fire there because that would be nice?
-							effectBlockLocation.add(0, 0.5, 0);
-							;
+							effectBlockLocation.add(0, 1, 0);
 							effectBlock.getWorld().dropItem(effectBlockLocation, newItem);
 							count++;
 						} else {
@@ -1286,16 +1283,17 @@ public class GeometricMagicPlayerListener implements Listener {
 				if (!player.hasPermission("geometricmagic.bypass.hunger")) {
 					player.setFoodLevel((int) (player.getFoodLevel() - (cost * philosopherStoneModifier(player))));
 				}
-				
+
 				ItemStack oneRedstone = new ItemStack(331, 1);
 				Item redStack = effectBlock.getWorld().dropItem(effectBlockLocation, oneRedstone);
 				List<Entity> entityList = redStack.getNearbyEntities(5, 10, 5);
 				for (int i = 0; i < entityList.size(); i++) {
 					if (entityList.get(i) instanceof Item) {
 						Item droppedItem = (Item) entityList.get(i);
+						ItemStack droppedItemStack = droppedItem.getItemStack();
 
 						// Skip items because they don't have values
-						if (droppedItem.getItemStack().getTypeId() > 255) {
+						if (droppedItemStack.getTypeId() > 255) {
 							player.sendMessage("You can't use items, only blocks");
 							continue;
 						}
@@ -1307,29 +1305,28 @@ public class GeometricMagicPlayerListener implements Listener {
 							return;
 						}
 
-						int valueArray = getBlockValue(plugin, droppedItem.getItemStack().getTypeId(), droppedItem.getItemStack().getData().getData(), droppedItem.getItemStack().getDurability(),
-								"sell", player);
+						int valueArray = getBlockValue(plugin, droppedItemStack.getTypeId(), droppedItemStack.getData().getData(), droppedItemStack.getDurability(), "sell", player);
 
-						int pay = (valueArray * droppedItem.getItemStack().getAmount());
+						int pay = (valueArray * droppedItemStack.getAmount());
 
 						if (getTransmutationCostSystem(plugin).equalsIgnoreCase("vault")) {
 							Economy econ = GeometricMagic.getEconomy();
 							if (pay > 0) {
 								econ.depositPlayer(player.getName(), pay);
-								player.sendMessage("Deposited " + pay + " " + econ.currencyNamePlural() + " for " + droppedItem.getItemStack().getType().name().toLowerCase().replace('_', ' '));
+								player.sendMessage("Deposited " + pay + " " + econ.currencyNamePlural() + " for " + droppedItemStack.getType().name().toLowerCase().replace('_', ' '));
 								droppedItem.remove();
 							} else if (pay < 0) {
 								econ.withdrawPlayer(player.getName(), pay * -1);
-								player.sendMessage("Withdrew " + pay + " " + econ.currencyNamePlural() + " for " + droppedItem.getItemStack().getType().name().toLowerCase().replace('_', ' '));
+								player.sendMessage("Withdrew " + pay + " " + econ.currencyNamePlural() + " for " + droppedItemStack.getType().name().toLowerCase().replace('_', ' '));
 								droppedItem.remove();
 							}
 						} else if (getTransmutationCostSystem(plugin).equalsIgnoreCase("xp")) {
-							player.setLevel((valueArray * droppedItem.getItemStack().getAmount()) + player.getLevel());
+							player.setLevel((valueArray * droppedItemStack.getAmount()) + player.getLevel());
 							droppedItem.remove();
 						}
-						
+
 						/*
-						 * player.setLevel((valueArray[droppedItem.getItemStack() .getTypeId()] * droppedItem.getItemStack() .getAmount()) + player.getLevel());
+						 * player.setLevel((valueArray[droppedItemStack .getTypeId()] * droppedItemStack .getAmount()) + player.getLevel());
 						 */
 					}
 				}
@@ -1682,8 +1679,7 @@ public class GeometricMagicPlayerListener implements Listener {
 
 				Integer circleSize = plugin.getConfig().getInt("setcircles.3334.size");
 
-				alchemyFiller(Material.AIR, (byte) 0, Material.FIRE, (byte) 0, effectBlock.getRelative((circleSize / 2) * -1, 0, (circleSize / 2) * -1).getLocation(),
-						effectBlock.getRelative(circleSize / 2, circleSize, circleSize / 2).getLocation(), player, false);
+				alchemyFiller(Material.AIR, (byte) 0, Material.FIRE, (byte) 0, effectBlock.getRelative((circleSize / 2) * -1, 0, (circleSize / 2) * -1).getLocation(), effectBlock.getRelative(circleSize / 2, circleSize, circleSize / 2).getLocation(), player, false);
 
 				setSetCircleCooldown(player.getName(), "3334", System.currentTimeMillis());
 
@@ -2073,8 +2069,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getX() <= circleEnd.getX()) {
 						while (startBlock.getZ() <= circleEnd.getZ()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
-										start.getBlock().getRelative(xIteration * width + width - 1, yIteration * width + width - 1, (zIteration * width + (width - 1))).getLocation(), player, true);
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(), start.getBlock().getRelative(xIteration * width + width - 1, yIteration * width + width - 1, (zIteration * width + (width - 1))).getLocation(), player, true);
 							}
 							zIteration++;
 							startBlock = startBlock.getRelative(0, 0, 1);
@@ -2094,8 +2089,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getZ() >= circleEnd.getZ()) {
 						while (startBlock.getX() <= circleEnd.getX()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
-										start.getBlock().getRelative(xIteration * width + width - 1, yIteration * width + width - 1, (zIteration * width - (width - 1))).getLocation(), player, true);
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(), start.getBlock().getRelative(xIteration * width + width - 1, yIteration * width + width - 1, (zIteration * width - (width - 1))).getLocation(), player, true);
 							}
 							xIteration++;
 							// System.out.println("xloop " + xIteration);
@@ -2120,8 +2114,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getX() >= circleEnd.getX()) {
 						while (startBlock.getZ() >= circleEnd.getZ()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
-										start.getBlock().getRelative(xIteration * width - (width - 1), yIteration * width + width - 1, (zIteration * width - (width - 1))).getLocation(), player, true);
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(), start.getBlock().getRelative(xIteration * width - (width - 1), yIteration * width + width - 1, (zIteration * width - (width - 1))).getLocation(), player, true);
 							}
 							zIteration--;
 							startBlock = startBlock.getRelative(0, 0, -1);
@@ -2141,8 +2134,7 @@ public class GeometricMagicPlayerListener implements Listener {
 					while (startBlock.getZ() <= circleEnd.getZ()) {
 						while (startBlock.getX() >= circleEnd.getX()) {
 							if (startBlock.getType() != Material.AIR) {
-								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(),
-										start.getBlock().getRelative(xIteration * width - (width - 1), yIteration * width + width - 1, (zIteration * width + (width - 1))).getLocation(), player, true);
+								alchemyFiller(a, fromData, b, toData, start.getBlock().getRelative(xIteration * width, yIteration * width, zIteration * width).getLocation(), start.getBlock().getRelative(xIteration * width - (width - 1), yIteration * width + width - 1, (zIteration * width + (width - 1))).getLocation(), player, true);
 							}
 							xIteration--;
 							// System.out.println("xloop");
@@ -2167,7 +2159,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		// System.out.println("alchemyFiller");
 		String playerName = player.getName();
 		long rate = plugin.getConfig().getLong("transmutation.rate");
-		
+
 		new Thread(new GeometricMagicTransmutationThread(plugin, rate, a, fromData, b, toData, start, end, playerName, charge)).start();
 	}
 
@@ -2288,8 +2280,9 @@ public class GeometricMagicPlayerListener implements Listener {
 		redStack.remove();
 		return status;
 	}
-	
+
 	public static void storageCircle(Location startLoc, Location endLoc, Player player, int size) {
+
 		File folder = new File("plugins/GeometricMagic/storage/");
 		File file = new File("plugins/GeometricMagic/storage/" + player.getName() + "." + String.valueOf(size));
 		if (folder.exists()) {
@@ -2303,9 +2296,9 @@ public class GeometricMagicPlayerListener implements Listener {
 						AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
 						AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 					}
-					
+
 					storageCircleLoad(startLoc, endLoc, player, size, file);
-					
+
 					// unexempt player from AntiCheat check
 					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
@@ -2327,9 +2320,9 @@ public class GeometricMagicPlayerListener implements Listener {
 						AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
 						AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 					}
-					
+
 					storageCircleStore(startLoc, endLoc, player, size, file);
-					
+
 					// unexempt player from AntiCheat check
 					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
@@ -2341,10 +2334,9 @@ public class GeometricMagicPlayerListener implements Listener {
 					e.printStackTrace();
 				}
 			}
-		}
-		else {
+		} else {
 			// Store blocks
-			if(folder.mkdirs()) {
+			if (folder.mkdirs()) {
 				try {
 					// exempt player from AntiCheat check
 					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
@@ -2353,9 +2345,9 @@ public class GeometricMagicPlayerListener implements Listener {
 						AnticheatAPI.exemptPlayer(player, CheckType.LONG_REACH);
 						AnticheatAPI.exemptPlayer(player, CheckType.NO_SWING);
 					}
-					
+
 					storageCircleStore(startLoc, endLoc, player, size, file);
-					
+
 					// unexempt player from AntiCheat check
 					if (Bukkit.getServer().getPluginManager().getPlugin("AntiCheat") != null) {
 						AnticheatAPI.unexemptPlayer(player, CheckType.FAST_PLACE);
@@ -2366,10 +2358,8 @@ public class GeometricMagicPlayerListener implements Listener {
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
-			}
-			else
-				System.out.println("[GeometricMagic] Error creating necessary folder(s)!" +
-						" Check your read/write permissions");
+			} else
+				System.out.println("[GeometricMagic] Error creating necessary folder(s)!" + " Check your read/write permissions");
 		}
 	}
 
@@ -2377,7 +2367,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		World world = player.getWorld();
 		Scanner in = new Scanner(file);
 		plugin.getServer().getPluginManager().registerEvents(blockListener, plugin);
-		
+
 		if (startLoc.getBlockX() > endLoc.getBlockX()) {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
 				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
@@ -2389,7 +2379,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							String[] newBlockStringArray = newBlockString.split(",");
 							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
 							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
-							
+
 							// Block break
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
@@ -2417,18 +2407,17 @@ public class GeometricMagicPlayerListener implements Listener {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-						for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--){
+						for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
 							String newBlockString = in.next();
 							String[] newBlockStringArray = newBlockString.split(",");
 							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
 							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
-							
+
 							// Block break
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
@@ -2457,19 +2446,18 @@ public class GeometricMagicPlayerListener implements Listener {
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
 				for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
-						for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++){
+						for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
 							String newBlockString = in.next();
 							String[] newBlockStringArray = newBlockString.split(",");
 							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
 							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
-							
+
 							// Block break
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
@@ -2497,8 +2485,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
 						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
@@ -2508,7 +2495,7 @@ public class GeometricMagicPlayerListener implements Listener {
 							String[] newBlockStringArray = newBlockString.split(",");
 							int newBlockID = Integer.parseInt(newBlockStringArray[0]);
 							byte newBlockData = Byte.parseByte(newBlockStringArray[1]);
-							
+
 							// Block break
 							if (block.getTypeId() != 0 && newBlockID == 0) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
@@ -2542,12 +2529,12 @@ public class GeometricMagicPlayerListener implements Listener {
 		in.close();
 		file.delete();
 	}
-	
+
 	public static void storageCircleStore(Location startLoc, Location endLoc, Player player, int size, File file) throws FileNotFoundException {
 		World world = player.getWorld();
 		PrintWriter out = new PrintWriter(file);
 		plugin.getServer().getPluginManager().registerEvents(blockListener, plugin);
-		
+
 		if (startLoc.getBlockX() > endLoc.getBlockX()) {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
 				for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
@@ -2555,7 +2542,7 @@ public class GeometricMagicPlayerListener implements Listener {
 						for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
-							
+
 							if (block.getType() != Material.AIR) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
@@ -2565,21 +2552,19 @@ public class GeometricMagicPlayerListener implements Listener {
 								} else {
 									out.println("0,0");
 								}
-							}
-							else {
+							} else {
 								out.println("0,0");
 							}
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
 						for (int x = startLoc.getBlockX(); x >= endLoc.getBlockX(); x--) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
-							
+
 							if (block.getType() != Material.AIR) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
@@ -2589,23 +2574,21 @@ public class GeometricMagicPlayerListener implements Listener {
 								} else {
 									out.println("0,0");
 								}
-							}
-							else {
+							} else {
 								out.println("0,0");
 							}
 						}
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			if (startLoc.getBlockZ() > endLoc.getBlockZ()) {
 				for (int z = startLoc.getBlockZ(); z >= endLoc.getBlockZ(); z--) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
 						for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
-							
+
 							if (block.getType() != Material.AIR) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
@@ -2615,21 +2598,19 @@ public class GeometricMagicPlayerListener implements Listener {
 								} else {
 									out.println("0,0");
 								}
-							}
-							else {
+							} else {
 								out.println("0,0");
 							}
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				for (int x = startLoc.getBlockX(); x <= endLoc.getBlockX(); x++) {
 					for (int y = startLoc.getBlockY(); y <= endLoc.getBlockY(); y++) {
 						for (int z = startLoc.getBlockZ(); z <= endLoc.getBlockZ(); z++) {
 							Location loc = new Location(world, x, y, z);
 							Block block = loc.getBlock();
-							
+
 							if (block.getType() != Material.AIR) {
 								if (!checkBreakBlacklist(block.getTypeId())) {
 									if (checkBlockBreakSimulation(loc, player)) {
@@ -2639,8 +2620,7 @@ public class GeometricMagicPlayerListener implements Listener {
 								} else {
 									out.println("0,0");
 								}
-							}
-							else {
+							} else {
 								out.println("0,0");
 							}
 						}
@@ -2651,7 +2631,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		HandlerList.unregisterAll(blockListener);
 		out.close();
 	}
-	
+
 	public static String getTransmutationCostSystem(GeometricMagic plugin) {
 		return plugin.getConfig().getString("transmutation.cost").toString();
 	}
@@ -3038,7 +3018,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		return false;
 	}
-	
+
 	public static boolean checkPlaceBlacklist(int m) {
 		List<String> blacklist = plugin.getConfig().getStringList("blacklist.place");
 		for (String s : blacklist) {
@@ -3047,7 +3027,7 @@ public class GeometricMagicPlayerListener implements Listener {
 		}
 		return false;
 	}
-	
+
 	public static PluginManager getPluginManager() {
 		return plugin.getServer().getPluginManager();
 	}
